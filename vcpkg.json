@@ -1,0 +1,24 @@
+{
+  "name": "renderer-application",
+  "version-string": "0.0.1",
+  "dependencies": [
+    "glfw3",
+    "boost-log",
+    "boost-json",
+    "catch2",
+    "benchmark",
+    "glm",
+    "tinygltf",
+    "volk",
+    "vulkan-memory-allocator",
+    "spirv-tools",
+    "glslang",
+    {
+      "name": "imgui",
+      "features": [
+        "glfw-binding"
+      ]
+    }
+  ],
+  "builtin-baseline": "e8c2a04eb7ca058b6e2f0e6e33c67fdbffeee846"
+}

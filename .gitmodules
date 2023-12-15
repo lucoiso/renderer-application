@@ -1,0 +1,3 @@
+[submodule "Source/VulkanRenderer"]
+	path = Source/VulkanRenderer
+	url = https://github.com/lucoiso/VulkanRenderer.git
