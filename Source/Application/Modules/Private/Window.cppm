@@ -4,20 +4,19 @@
 
 module;
 
+#include <filesystem>
 #include <imgui.h>
+#include <numeric>
 
 module Application.Window;
 
 using namespace Application;
 
-import <filesystem>;
-import <numeric>;
-
 import RenderCore.Renderer;
 import RenderCore.Types.Camera;
 import RenderCore.Types.Object;
 
-std::unordered_map<std::string, std::string> GetAvailableglTFAssetsInDirectory(std::string_view const Root, std::vector<std::string_view> const& Extensions)
+std::unordered_map<std::string, std::string> GetAvailableglTFAssetsInDirectory(std::string const& Root, std::vector<std::string> const& Extensions)
 {
     std::unordered_map<std::string, std::string> OptionsMap {{"None", ""}};
     try

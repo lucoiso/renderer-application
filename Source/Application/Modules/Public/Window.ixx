@@ -11,6 +11,6 @@ namespace Application
     export class AppWindow : public RenderCore::Window
     {
     protected:
-        virtual void CreateOverlay() override;
+        void CreateOverlay() override;
     };
 }// namespace Application
