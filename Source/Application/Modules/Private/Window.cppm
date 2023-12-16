@@ -51,6 +51,10 @@ void AppWindow::CreateOverlay()
             ImGui::Text("Frame Rate: %.3fms", GetRenderer().GetFrameTime());
             ImGui::Text("Frame Time: %.0f FPS", 1.f / GetRenderer().GetFrameTime());
 
+            float MaxFPS = 1.0 / GetRenderer().GetFrameRateCap();
+            ImGui::InputFloat("Max FPS", &MaxFPS, 1.F, 1.F, "%.0f");
+            GetRenderer().SetFrameRateCap(MaxFPS);
+
             ImGui::Text("Camera Position: %.2f, %.2f, %.2f", GetRenderer().GetCamera().GetPosition().X, GetRenderer().GetCamera().GetPosition().X, GetRenderer().GetCamera().GetPosition().Z);
             ImGui::Text("Camera Yaw: %.2f", GetRenderer().GetCamera().GetRotation().Yaw);
             ImGui::Text("Camera Pitch: %.2f", GetRenderer().GetCamera().GetRotation().Pitch);
