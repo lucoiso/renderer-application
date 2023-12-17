@@ -1,0 +1,90 @@
+name: CMake Build Workflow
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  BUILD_TYPE: Debug
+  BUILD_TESTS: true
+  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  VCPKG_ROOT: ${{github.workspace}}/vcpkg
+  VCPKG_BUILTIN_BASELINE: c8696863d371ab7f46e213d8f5ca923c4aef2a00
+  VCPKG_ENABLE_METRICS: 1
+  VCPKG_DEFAULT_BINARY_CACHE: ${{github.workspace}}/vcpkg/bincache
+  VCPKG_BINARY_SOURCES: 'clear;x-gha,readwrite'
+  OUTPUT_DIRECTORY: out/build
+
+permissions:
+  actions: read
+  deployments: write
+  contents: write
+  id-token: write
+  security-events: write
+
+jobs:
+  setup_environment:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ windows-latest, ubuntu-latest, macos-latest ]
+      fail-fast: false
+
+    steps:
+      - name: Checkout & Init Submodules
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+
+      - name: Setup Ubuntu Environment
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev
+          sudo apt-get install -y clang
+
+      - name: Setup MacOS Environment
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew update && brew upgrade
+          brew install llvm
+          echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> ~/.zshrc
+
+      - name: Get CMake and Ninja
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: latest
+          ninjaVersion: latest
+
+      - name: Install Vulkan SDK
+        uses: humbletim/setup-vulkan-sdk@v1.2.0
+        with:
+          vulkan-query-version: latest
+          vulkan-components: Vulkan-Headers
+          vulkan-use-cache: true
+
+      - name: Setup VCPKG
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgDirectory: ${{env.VCPKG_ROOT}}
+          vcpkgGitCommitId: ${{env.VCPKG_BUILTIN_BASELINE}}
+          vcpkgJsonGlob: '**/vcpkg.json'
+
+  configure_and_build:
+    needs: setup_environment
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ windows-latest, ubuntu-latest, macos-latest ]
+      fail-fast: false
+
+    steps:
+      - name: Configure and Build Project
+        uses: lukka/run-cmake@v10
+        with:
+          cmakeListsTxtPath: '${{github.workspace}}/CMakeLists.txt'
+          configurePreset: ${{env.BUILD_TYPE}}
+          buildPreset: ${{env.BUILD_TYPE}}

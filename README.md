@@ -1,3 +1,5 @@
+[![renderer-application CMake Workflow](https://github.com/lucoiso/renderer-application/actions/workflows/cmake-build.yml/badge.svg)](https://github.com/lucoiso/renderer-application/actions/workflows/cmake-build.yml)
+
 ![image](https://github.com/lucoiso/renderer-application/assets/77353979/2ba86177-6e79-4dc6-af48-f48c43bef5f1)
 
 # Dependencies
