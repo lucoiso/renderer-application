@@ -86,7 +86,5 @@ jobs:
 
     steps:
       - name: Configure and Build Project
-        uses: lukka/run-cmake@v10
-        with:
-          configurePreset: ${{env.BUILD_TYPE}}
-          buildPreset: ${{env.BUILD_TYPE}}
+        run: |
+          cmake --build --preset ${{env.BUILD_TYPE}}
