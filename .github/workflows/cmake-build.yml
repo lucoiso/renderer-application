@@ -8,7 +8,7 @@ on:
 
 env:
   BUILD_TYPE: Release
-  BUILD_TESTS: true
+  BUILD_TESTS: false # This application doesn't contain tests at the moment, will re-enable after implementations
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
   VCPKG_ROOT: ${{github.workspace}}/vcpkg
   VCPKG_BUILTIN_BASELINE: c8696863d371ab7f46e213d8f5ca923c4aef2a00
@@ -55,7 +55,7 @@ jobs:
         uses: humbletim/setup-vulkan-sdk@v1.2.0
         with:
           vulkan-query-version: latest
-          vulkan-components: Vulkan-Headers,Vulkan-Loader
+          vulkan-components: Vulkan-Headers
           vulkan-use-cache: true
 
       - name: Inspect Root Directory
