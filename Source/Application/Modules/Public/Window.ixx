@@ -2,15 +2,24 @@
 // Year : 2023
 // Repo : https://github.com/lucoiso/renderer-application
 
+module;
+
+#include <memory>
+#include <vector>
+
 export module Application.Window;
 
 import RenderCore.Window;
 
 namespace Application
 {
-    export class AppWindow : public RenderCore::Window
+    export class AppWindow final : public RenderCore::Window
     {
+    public:
+        AppWindow();
+
     protected:
-        void CreateOverlay() override;
+        void PrePaint() override;
+        void PostPaint() override;
     };
 }// namespace Application
