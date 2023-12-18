@@ -20,6 +20,10 @@ namespace Application
 
     protected:
         void PrePaint() override;
+        void Paint() override;
         void PostPaint() override;
+
+    private:
+        static void SetDockingLayout();
     };
 }// namespace Application

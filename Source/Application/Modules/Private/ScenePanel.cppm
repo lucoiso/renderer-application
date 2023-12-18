@@ -52,7 +52,7 @@ void ScenePanel::Paint()
 
 void ScenePanel::CreateInfoPanel() const
 {
-    if (m_Window && ImGui::CollapsingHeader("Scene Status"))
+    if (m_Window && ImGui::CollapsingHeader("Scene"))
     {
         auto const& Objects = m_Window->GetRenderer().GetObjects();
 
