@@ -4,7 +4,14 @@
 
 module;
 
+#include <cstdint>
+
+// Vulkan
+#include <volk.h>
+
+// Imgui
 #include <imgui.h>
+#include <imgui_impl_vulkan.h>
 #include <imgui_internal.h>
 
 module Application.Window;
@@ -19,6 +26,27 @@ AppWindow::AppWindow()
 {
     AddChild<StatusPanel>(this);
     AddChild<ScenePanel>(this);
+}
+
+void AppWindow::OnInitialized()
+{
+}
+
+void AppWindow::Refresh()
+{
+    if (m_ViewportDescriptorSet != VK_NULL_HANDLE)
+    {
+        ImGui_ImplVulkan_RemoveTexture(m_ViewportDescriptorSet);
+        m_ViewportDescriptorSet = VK_NULL_HANDLE;
+    }
+
+    VkSampler const Sampler     = GetRenderer().GetSwapChainSampler(0U);
+    VkImageView const ImageView = GetRenderer().GetSwapChainImageView(0U);
+
+    if (Sampler != VK_NULL_HANDLE && ImageView != VK_NULL_HANDLE)
+    {
+        m_ViewportDescriptorSet = ImGui_ImplVulkan_AddTexture(Sampler, ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    }
 }
 
 static ImGuiID DockspaceID {0U};
@@ -41,26 +69,37 @@ void AppWindow::PrePaint()
     ImGui::Begin("Options");
 }
 
-void AppWindow::Paint()
-{
-}
-
 void AppWindow::PostPaint()
 {
     ImGui::End();
 
-    ImGuiViewport const* const Viewport = ImGui::GetMainViewport();
+    ImGui::SetNextWindowBgAlpha(0.F);
+    ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs);
+
+    ImVec2 const WindowPos  = ImGui::GetWindowPos();
+    ImVec2 const WindowSize = ImGui::GetWindowSize();
+
+    if (m_ViewportDescriptorSet != VK_NULL_HANDLE)
+    {
+        ImVec2 const ViewportSize = ImGui::GetContentRegionAvail();
+        ImGui::Image(m_ViewportDescriptorSet, ImVec2{ViewportSize.x, ViewportSize.y});
+    }
 
     GetRenderer().SetViewportOffset(RenderCore::ViewSize {
-            .X = Viewport->Pos.x,
-            .Y = Viewport->Pos.y,
-            .W = Viewport->Size.x,
-            .H = Viewport->Size.y});
+            .X = static_cast<std::int32_t>(WindowPos.x),
+            .Y = static_cast<std::int32_t>(WindowPos.y),
+            .W = static_cast<std::uint32_t>(WindowSize.x),
+            .H = static_cast<std::uint32_t>(WindowSize.y)});
+
+    ImGui::End();
 }
 
 void AppWindow::SetDockingLayout()
 {
-    ImGuiID TempNodeID   = DockspaceID;
+    ImGuiID TempNodeID                     = DockspaceID;
+    ImGuiDockNode const* const CentralNode = ImGui::DockBuilderGetCentralNode(TempNodeID);
+    ImGui::DockBuilderDockWindow("Viewport", CentralNode->ID);
+
     ImGuiID const LeftID = ImGui::DockBuilderSplitNode(TempNodeID, ImGuiDir_Left, 0.7F, nullptr, &TempNodeID);
     ImGui::DockBuilderDockWindow("Options", LeftID);
 
