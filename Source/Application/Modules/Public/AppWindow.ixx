@@ -2,11 +2,6 @@
 // Year : 2023
 // Repo : https://github.com/lucoiso/renderer-application
 
-module;
-
-#include <volk.h>
-#include <vector>
-
 export module Application.Window;
 
 import RenderCore.Window;
@@ -15,13 +10,10 @@ namespace Application
 {
     export class AppWindow final : public RenderCore::Window
     {
-        VkDescriptorSet m_ViewportDescriptorSet { VK_NULL_HANDLE };
-
     public:
         AppWindow();
 
     protected:
-        void Refresh() override;
         void PrePaint() override;
         void PostPaint() override;
 

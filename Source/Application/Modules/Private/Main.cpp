@@ -15,7 +15,7 @@ int main([[maybe_unused]] int Argc, [[maybe_unused]] char* Argv[])
 #endif
 
     if (Application::AppWindow Window;
-        Window.Initialize(600U, 600U, "Vulkan Renderer: Main Window"))
+        Window.Initialize(600U, 600U, "Vulkan Renderer: Main Window", RenderCore::InitializationFlags::NONE))
     {
         while (Window.IsOpen())
         {
