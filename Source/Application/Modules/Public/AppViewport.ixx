@@ -4,6 +4,7 @@
 
 module;
 
+#include <vector>
 #include <volk.h>
 
 export module Application.Viewport;
@@ -15,7 +16,7 @@ namespace Application
 {
     export class AppViewport final : public RenderCore::Control
     {
-        VkDescriptorSet m_ViewportDescriptorSet {VK_NULL_HANDLE};
+        std::vector<VkDescriptorSet> m_ViewportDescriptorSets {};
         AppWindow* m_Window {nullptr};
 
     public:

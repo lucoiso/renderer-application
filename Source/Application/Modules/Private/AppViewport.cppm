@@ -4,6 +4,8 @@
 
 module;
 
+#include <vector>
+
 // Vulkan
 #include <volk.h>
 
@@ -32,18 +34,24 @@ void AppViewport::Refresh()
         return;
     }
 
-    if (m_ViewportDescriptorSet != VK_NULL_HANDLE)
+    if (!std::empty(m_ViewportDescriptorSets))
     {
-        ImGui_ImplVulkan_RemoveTexture(m_ViewportDescriptorSet);
-        m_ViewportDescriptorSet = VK_NULL_HANDLE;
+        for (auto const& DescriptorSetIter: m_ViewportDescriptorSets)
+        {
+            ImGui_ImplVulkan_RemoveTexture(DescriptorSetIter);
+        }
+        m_ViewportDescriptorSets.clear();
     }
 
-    VkSampler const Sampler     = m_Window->GetRenderer().GetSampler();
-    VkImageView const ImageView = m_Window->GetRenderer().GetViewportRenderImageView();
+    VkSampler const Sampler {m_Window->GetRenderer().GetSampler()};
+    std::vector<VkImageView> const ImageViews {m_Window->GetRenderer().GetViewportRenderImageViews()};
 
-    if (Sampler != VK_NULL_HANDLE && ImageView != VK_NULL_HANDLE)
+    if (Sampler != VK_NULL_HANDLE && !std::empty(ImageViews))
     {
-        m_ViewportDescriptorSet = ImGui_ImplVulkan_AddTexture(Sampler, ImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        for (auto const& ImageViewIter: ImageViews)
+        {
+            m_ViewportDescriptorSets.push_back(ImGui_ImplVulkan_AddTexture(Sampler, ImageViewIter, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
+        }
     }
 }
 
@@ -57,10 +65,13 @@ void AppViewport::PrePaint()
 
 void AppViewport::Paint()
 {
-    if (m_ViewportDescriptorSet != VK_NULL_HANDLE)
+    if (!std::empty(m_ViewportDescriptorSets))
     {
-        ImVec2 const ViewportSize {ImGui::GetContentRegionAvail()};
-        ImGui::Image(m_ViewportDescriptorSet, ImVec2 {ViewportSize.x, ViewportSize.y});
+        if (std::optional<std::int32_t> const& ImageIndex = m_Window->GetRenderer().GetImageIndex(); ImageIndex.has_value())
+        {
+            ImVec2 const ViewportSize {ImGui::GetContentRegionAvail()};
+            ImGui::Image(m_ViewportDescriptorSets.at(ImageIndex.value()), ImVec2 {ViewportSize.x, ViewportSize.y});
+        }
     }
 }
 
