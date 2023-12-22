@@ -5,6 +5,7 @@
 module;
 
 #include <volk.h>
+#include <vector>
 
 export module Application.Window;
 
@@ -14,13 +15,12 @@ namespace Application
 {
     export class AppWindow final : public RenderCore::Window
     {
-        VkDescriptorSet m_ViewportDescriptorSet {VK_NULL_HANDLE};
+        VkDescriptorSet m_ViewportDescriptorSet { VK_NULL_HANDLE };
 
     public:
         AppWindow();
 
     protected:
-        void OnInitialized() override;
         void Refresh() override;
         void PrePaint() override;
         void PostPaint() override;

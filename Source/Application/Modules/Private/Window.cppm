@@ -5,6 +5,7 @@
 module;
 
 #include <cstdint>
+#include <vector>
 
 // Vulkan
 #include <volk.h>
@@ -28,20 +29,21 @@ AppWindow::AppWindow()
     AddChild<ScenePanel>(this);
 }
 
-void AppWindow::OnInitialized()
-{
-}
-
 void AppWindow::Refresh()
 {
+    if (!RenderCore::Renderer::IsImGuiInitialized())
+    {
+        return;
+    }
+
     if (m_ViewportDescriptorSet != VK_NULL_HANDLE)
     {
         ImGui_ImplVulkan_RemoveTexture(m_ViewportDescriptorSet);
         m_ViewportDescriptorSet = VK_NULL_HANDLE;
     }
 
-    VkSampler const Sampler     = GetRenderer().GetSwapChainSampler(0U);
-    VkImageView const ImageView = GetRenderer().GetSwapChainImageView(0U);
+    VkSampler const Sampler     = GetRenderer().GetSampler();
+    VkImageView const ImageView = GetRenderer().GetViewportRenderImageView();
 
     if (Sampler != VK_NULL_HANDLE && ImageView != VK_NULL_HANDLE)
     {
@@ -76,20 +78,17 @@ void AppWindow::PostPaint()
     ImGui::SetNextWindowBgAlpha(0.F);
     ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoNav | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs);
 
-    ImVec2 const WindowPos  = ImGui::GetWindowPos();
-    ImVec2 const WindowSize = ImGui::GetWindowSize();
-
     if (m_ViewportDescriptorSet != VK_NULL_HANDLE)
     {
+        ImVec2 const WindowOffset = ImGui::GetWindowPos();
         ImVec2 const ViewportSize = ImGui::GetContentRegionAvail();
-        ImGui::Image(m_ViewportDescriptorSet, ImVec2{ViewportSize.x, ViewportSize.y});
-    }
 
-    GetRenderer().SetViewportOffset(RenderCore::ViewSize {
-            .X = static_cast<std::int32_t>(WindowPos.x),
-            .Y = static_cast<std::int32_t>(WindowPos.y),
-            .W = static_cast<std::uint32_t>(WindowSize.x),
-            .H = static_cast<std::uint32_t>(WindowSize.y)});
+        ImGui::Image(m_ViewportDescriptorSet, ImVec2 {ViewportSize.x, ViewportSize.y});
+
+        GetRenderer().SetViewportRect(VkRect2D {
+                .offset = {static_cast<std::int32_t>(WindowOffset.x), static_cast<std::int32_t>(WindowOffset.y)},
+                .extent = {static_cast<std::uint32_t>(ViewportSize.x), static_cast<std::uint32_t>(ViewportSize.y)}});
+    }
 
     ImGui::End();
 }
