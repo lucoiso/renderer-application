@@ -44,7 +44,7 @@ void AppViewport::Refresh()
     }
 
     VkSampler const Sampler {m_Window->GetRenderer().GetSampler()};
-    std::vector<VkImageView> const ImageViews {m_Window->GetRenderer().GetViewportRenderImageViews()};
+    std::vector const ImageViews {m_Window->GetRenderer().GetViewportRenderImageViews()};
 
     if (Sampler != VK_NULL_HANDLE && !std::empty(ImageViews))
     {
@@ -57,8 +57,8 @@ void AppViewport::Refresh()
 
 void AppViewport::PrePaint()
 {
-    VkClearValue const& g_ClearColor {RenderCore::g_ClearValues.at(0U)};
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4 {g_ClearColor.color.float32[0], g_ClearColor.color.float32[1], g_ClearColor.color.float32[2], g_ClearColor.color.float32[3]});
+    VkClearValue const& ClearColor {RenderCore::g_ClearValues.at(0U)};
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4 {ClearColor.color.float32[0], ClearColor.color.float32[1], ClearColor.color.float32[2], ClearColor.color.float32[3]});
     ImGui::Begin("Viewport");
     ImGui::PopStyleColor();
 }
