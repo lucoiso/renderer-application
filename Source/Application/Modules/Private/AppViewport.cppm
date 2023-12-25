@@ -38,7 +38,10 @@ void AppViewport::Refresh()
     {
         for (auto const& DescriptorSetIter: m_ViewportDescriptorSets)
         {
-            ImGui_ImplVulkan_RemoveTexture(DescriptorSetIter);
+            if (DescriptorSetIter != VK_NULL_HANDLE)
+            {
+                ImGui_ImplVulkan_RemoveTexture(DescriptorSetIter);
+            }
         }
         m_ViewportDescriptorSets.clear();
     }
