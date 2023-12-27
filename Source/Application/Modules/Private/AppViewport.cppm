@@ -10,6 +10,7 @@ module;
 #include <volk.h>
 
 // Imgui
+#include <filesystem>
 #include <imgui.h>
 #include <imgui_impl_vulkan.h>
 
@@ -22,7 +23,7 @@ import RenderCore.Types.Camera;
 import RenderCore.Types.Object;
 import RenderCore.Utils.Constants;
 
-AppViewport::AppViewport(Control* const Parent, AppWindow* const Window)
+AppViewport::AppViewport(Control * const Parent, AppWindow * const Window)
     : Control(Parent), m_Window(Window)
 {
 }
@@ -46,8 +47,8 @@ void AppViewport::Refresh()
         m_ViewportDescriptorSets.clear();
     }
 
-    VkSampler const Sampler {m_Window->GetRenderer().GetSampler()};
-    std::vector const ImageViews {m_Window->GetRenderer().GetViewportRenderImageViews()};
+    VkSampler const Sampler{m_Window->GetRenderer().GetSampler()};
+    std::vector const ImageViews{m_Window->GetRenderer().GetViewportRenderImageViews()};
 
     if (Sampler != VK_NULL_HANDLE && !std::empty(ImageViews))
     {
@@ -60,8 +61,8 @@ void AppViewport::Refresh()
 
 void AppViewport::PrePaint()
 {
-    VkClearValue const& ClearColor {RenderCore::g_ClearValues.at(0U)};
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4 {ClearColor.color.float32[0], ClearColor.color.float32[1], ClearColor.color.float32[2], ClearColor.color.float32[3]});
+    VkClearValue const& ClearColor{RenderCore::g_ClearValues.at(0U)};
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4{ClearColor.color.float32[0], ClearColor.color.float32[1], ClearColor.color.float32[2], ClearColor.color.float32[3]});
     ImGui::Begin("Viewport");
     ImGui::PopStyleColor();
 }
@@ -72,8 +73,25 @@ void AppViewport::Paint()
     {
         if (std::optional<std::int32_t> const& ImageIndex = m_Window->GetRenderer().GetImageIndex(); ImageIndex.has_value())
         {
-            ImVec2 const ViewportSize {ImGui::GetContentRegionAvail()};
-            ImGui::Image(m_ViewportDescriptorSets.at(ImageIndex.value()), ImVec2 {ViewportSize.x, ViewportSize.y});
+            constexpr auto ViewportFramePath{"Frame.png"};
+            if (ImGui::Button("Save Frame Image"))
+            {
+                m_Window->GetRenderer().SaveFrameToImageFile(ViewportFramePath);
+            }
+
+            if (std::filesystem::exists(ViewportFramePath))
+            {
+                ImGui::SameLine();
+                if (ImGui::Button("Open Frame Image"))
+                {
+                    std::filesystem::path const FramePath{ViewportFramePath};
+                    std::string const Command{"start " + FramePath.string()};
+                    std::system(std::data(Command));
+                }
+            }
+
+            ImVec2 const ViewportSize{ImGui::GetContentRegionAvail()};
+            ImGui::Image(m_ViewportDescriptorSets.at(ImageIndex.value()), ImVec2{ViewportSize.x, ViewportSize.y});
         }
     }
 }
