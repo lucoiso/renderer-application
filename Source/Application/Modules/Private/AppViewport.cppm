@@ -23,7 +23,7 @@ import RenderCore.Types.Camera;
 import RenderCore.Types.Object;
 import RenderCore.Utils.Constants;
 
-AppViewport::AppViewport(Control * const Parent, AppWindow * const Window)
+AppViewport::AppViewport(Control* const Parent, AppWindow* const Window)
     : Control(Parent), m_Window(Window)
 {
 }
