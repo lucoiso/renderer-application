@@ -45,7 +45,7 @@ TARGET_LINK_LIBRARIES(${LIBRARY_NAME} PRIVATE
         Boost::log
         imgui::imgui
         volk::volk_headers
-        ImGui-Volk-Backend
+        ImGui-Backend
 )
 
 TARGET_LINK_LIBRARIES(${LIBRARY_NAME} PUBLIC

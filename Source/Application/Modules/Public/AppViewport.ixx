@@ -16,16 +16,20 @@ namespace Application
 {
     export class AppViewport final : public RenderCore::Control
     {
-        std::vector<VkDescriptorSet> m_ViewportDescriptorSets {};
-        AppWindow* m_Window {nullptr};
+        std::vector<VkDescriptorSet> m_ViewportDescriptorSets{};
+        AppWindow* m_Window{nullptr};
 
     public:
         AppViewport(Control*, AppWindow*);
+        virtual ~AppViewport() override;
 
     protected:
         void Refresh() override;
+
         void PrePaint() override;
+
         void Paint() override;
+
         void PostPaint() override;
     };
 }// namespace Application

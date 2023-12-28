@@ -4,13 +4,13 @@
 
 module;
 
+#include <filesystem>
 #include <vector>
 
 // Vulkan
 #include <volk.h>
 
 // Imgui
-#include <filesystem>
 #include <imgui.h>
 #include <imgui_impl_vulkan.h>
 
@@ -23,9 +23,24 @@ import RenderCore.Types.Camera;
 import RenderCore.Types.Object;
 import RenderCore.Utils.Constants;
 
-AppViewport::AppViewport(Control* const Parent, AppWindow* const Window)
+AppViewport::AppViewport(Control * const Parent, AppWindow * const Window)
     : Control(Parent), m_Window(Window)
 {
+}
+
+AppViewport::~AppViewport()
+{
+    if (!std::empty(m_ViewportDescriptorSets))
+    {
+        for (auto const& DescriptorSetIter: m_ViewportDescriptorSets)
+        {
+            if (DescriptorSetIter != VK_NULL_HANDLE)
+            {
+                ImGui_ImplVulkan_RemoveTexture(DescriptorSetIter);
+            }
+        }
+        m_ViewportDescriptorSets.clear();
+    }
 }
 
 void AppViewport::Refresh()
@@ -62,7 +77,12 @@ void AppViewport::Refresh()
 void AppViewport::PrePaint()
 {
     VkClearValue const& ClearColor{RenderCore::g_ClearValues.at(0U)};
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4{ClearColor.color.float32[0], ClearColor.color.float32[1], ClearColor.color.float32[2], ClearColor.color.float32[3]});
+    ImGui::PushStyleColor(ImGuiCol_WindowBg,
+                          ImVec4{ClearColor.color.float32[0],
+                                 ClearColor.color.float32[1],
+                                 ClearColor.color.float32[2],
+                                 ClearColor.color.float32[3]});
+
     ImGui::Begin("Viewport");
     ImGui::PopStyleColor();
 }
