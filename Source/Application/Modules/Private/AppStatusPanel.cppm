@@ -7,7 +7,7 @@ module;
 #include <imgui.h>
 #include <type_traits>
 
-module Application.Window.StatusPanel;
+module Application.StatusPanel;
 
 using namespace Application;
 
@@ -15,12 +15,12 @@ import RenderCore.Renderer;
 import RenderCore.Types.Camera;
 import RenderCore.Types.Object;
 
-StatusPanel::StatusPanel(Control* const Parent, AppWindow* const Window)
+AppStatusPanel::AppStatusPanel(Control* const Parent, AppWindow* const Window)
     : Control(Parent), m_Window(Window)
 {
 }
 
-void StatusPanel::Paint()
+void AppStatusPanel::Paint()
 {
     if (m_Window && ImGui::CollapsingHeader("Status "))
     {

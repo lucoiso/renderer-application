@@ -9,7 +9,7 @@ module;
 #include <numeric>
 #include <unordered_map>
 
-module Application.Window.ScenePanel;
+module Application.ScenePanel;
 
 using namespace Application;
 
@@ -40,17 +40,17 @@ constexpr auto OptionNone         = "None";
 static std::string s_SelectedItem = OptionNone;
 static std::string s_ModelPath    = s_OptionsMap.at(s_SelectedItem);
 
-ScenePanel::ScenePanel(Control* const Parent, AppWindow* const Window)
+AppScenePanel::AppScenePanel(Control* const Parent, AppWindow* const Window)
     : Control(Parent), m_Window(Window)
 {
 }
 
-void ScenePanel::Paint()
+void AppScenePanel::Paint()
 {
     CreateInfoPanel();
 }
 
-void ScenePanel::CreateInfoPanel() const
+void AppScenePanel::CreateInfoPanel() const
 {
     if (m_Window && ImGui::CollapsingHeader("Scene"))
     {
@@ -120,7 +120,7 @@ void ScenePanel::CreateInfoPanel() const
     }
 }
 
-void ScenePanel::CreateObjectsList() const
+void AppScenePanel::CreateObjectsList() const
 {
     if (m_Window)
     {

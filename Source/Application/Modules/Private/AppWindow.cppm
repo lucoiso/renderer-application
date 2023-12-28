@@ -10,15 +10,18 @@ module;
 module Application.Window;
 
 import RenderCore.Types.Transform;
-import Application.Window.ScenePanel;
-import Application.Window.StatusPanel;
+
+import Application.Viewport;
+import Application.ScenePanel;
+import Application.StatusPanel;
 
 using namespace Application;
 
 AppWindow::AppWindow()
 {
-    AddChild<StatusPanel>(this);
-    AddChild<ScenePanel>(this);
+    AddChild<AppStatusPanel>(this);
+    AddChild<AppScenePanel>(this);
+    AddIndependentChild<AppViewport>(this);
 }
 
 static ImGuiID DockspaceID {0U};
@@ -41,26 +44,17 @@ void AppWindow::PrePaint()
     ImGui::Begin("Options");
 }
 
-void AppWindow::Paint()
-{
-}
-
 void AppWindow::PostPaint()
 {
     ImGui::End();
-
-    ImGuiViewport const* const Viewport = ImGui::GetMainViewport();
-
-    GetRenderer().SetViewportOffset(RenderCore::ViewSize {
-            .X = Viewport->Pos.x,
-            .Y = Viewport->Pos.y,
-            .W = Viewport->Size.x,
-            .H = Viewport->Size.y});
 }
 
 void AppWindow::SetDockingLayout()
 {
-    ImGuiID TempNodeID   = DockspaceID;
+    ImGuiID TempNodeID                     = DockspaceID;
+    ImGuiDockNode const* const CentralNode = ImGui::DockBuilderGetCentralNode(TempNodeID);
+    ImGui::DockBuilderDockWindow("Viewport", CentralNode->ID);
+
     ImGuiID const LeftID = ImGui::DockBuilderSplitNode(TempNodeID, ImGuiDir_Left, 0.7F, nullptr, &TempNodeID);
     ImGui::DockBuilderDockWindow("Options", LeftID);
 
