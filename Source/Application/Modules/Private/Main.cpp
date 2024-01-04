@@ -9,7 +9,7 @@
 
 import Application.Window;
 
-int main([[maybe_unused]] int Argc, [[maybe_unused]] char* Argv[])
+int main([[maybe_unused]] int const Argc, [[maybe_unused]] char* const Argv[])
 {
 #ifndef _DEBUG
     boost::log::core::get()->set_filter(boost::log::trivial::severity != boost::log::trivial::debug);
@@ -18,7 +18,7 @@ int main([[maybe_unused]] int Argc, [[maybe_unused]] char* Argv[])
     // boost::log::add_file_log("renderer.log");
 
     if (Application::AppWindow Window;
-        Window.Initialize(600U, 600U, "Vulkan Renderer: Main Window", RenderCore::InitializationFlags::NONE))
+        Window.Initialize(800U, 600U, "Vulkan Renderer: Main Window", RenderCore::InitializationFlags::NONE))
     {
         while (Window.IsOpen())
         {
