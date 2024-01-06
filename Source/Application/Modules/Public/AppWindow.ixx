@@ -20,4 +20,4 @@ namespace Application
     private:
         static void SetDockingLayout();
     };
-}// namespace Application
+} // namespace Application

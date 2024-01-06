@@ -1,6 +1,6 @@
 // Author: Lucas Vilas-Boas
 // Year : 2023
-// Repo : https://github.com/lucoiso/VulkanRenderer
+// Repo : https://github.com/lucoiso/renderer-application
 
 module;
 
@@ -17,11 +17,12 @@ import RenderCore.Renderer;
 import RenderCore.Types.Camera;
 import RenderCore.Types.Object;
 
-static std::unordered_map<std::string, std::string> const s_OptionsMap = [](std::string_view const& Root, std::vector<std::string> const& Extensions) {
+static std::unordered_map<std::string, std::string> const s_OptionsMap = [](std::string_view const &Root, std::vector<std::string> const &Extensions)
+{
     std::unordered_map<std::string, std::string> OptionsMap {{"None", ""}};
     try
     {
-        for (auto const& Entry: std::filesystem::recursive_directory_iterator(Root))
+        for (auto const &Entry: std::filesystem::recursive_directory_iterator(Root))
         {
             if (Entry.is_regular_file() && std::ranges::find(Extensions, Entry.path().extension()) != std::cend(Extensions))
             {
@@ -36,12 +37,11 @@ static std::unordered_map<std::string, std::string> const s_OptionsMap = [](std:
     return OptionsMap;
 }("Resources/Assets", {".gltf", ".glb"});
 
-constexpr auto OptionNone         = "None";
+constexpr auto OptionNone = "None";
 static std::string s_SelectedItem = OptionNone;
-static std::string s_ModelPath    = s_OptionsMap.at(s_SelectedItem);
+static std::string s_ModelPath = s_OptionsMap.at(s_SelectedItem);
 
-AppScenePanel::AppScenePanel(Control* const Parent, AppWindow* const Window)
-    : Control(Parent), m_Window(Window)
+AppScenePanel::AppScenePanel(Control *const Parent, AppWindow *const Window) : Control(Parent), m_Window(Window)
 {
 }
 
@@ -52,9 +52,9 @@ void AppScenePanel::Paint()
 
 void AppScenePanel::CreateInfoPanel() const
 {
-    if (m_Window && ImGui::CollapsingHeader("Scene"))
+    if (m_Window && ImGui::CollapsingHeader("Scene", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        auto const& Objects = m_Window->GetRenderer().GetObjects();
+        auto const &Objects = m_Window->GetRenderer().GetObjects();
 
         if (std::empty(Objects))
         {
@@ -65,13 +65,13 @@ void AppScenePanel::CreateInfoPanel() const
         {
             bool SelectionChanged = false;
 
-            for (auto const& [Name, Path]: s_OptionsMap)
+            for (auto const &[Name, Path]: s_OptionsMap)
             {
                 bool const bIsSelected = s_SelectedItem == Name;
                 if (ImGui::Selectable(std::data(Name), bIsSelected))
                 {
-                    s_SelectedItem   = Name;
-                    s_ModelPath      = Path;
+                    s_SelectedItem = Name;
+                    s_ModelPath = Path;
                     SelectionChanged = true;
                 }
 
@@ -93,12 +93,14 @@ void AppScenePanel::CreateInfoPanel() const
         }
 
         ImGui::Text("Loaded Objects: %d", m_Window->GetRenderer().GetNumObjects());
-        ImGui::Text("Total Triangles: %d", std::accumulate(std::begin(Objects),
-                                                           std::end(Objects),
-                                                           0U,
-                                                           [](std::uint32_t const Sum, auto const& Object) {
-                                                               return Sum + Object->GetTrianglesCount();
-                                                           }));
+        ImGui::Text("Total Triangles: %d",
+                    std::accumulate(std::begin(Objects),
+                                    std::end(Objects),
+                                    0U,
+                                    [](std::uint32_t const Sum, auto const &Object)
+                                    {
+                                        return Sum + Object->GetTrianglesCount();
+                                    }));
 
         if (!std::empty(Objects))
         {
@@ -124,10 +126,10 @@ void AppScenePanel::CreateObjectsList() const
 {
     if (m_Window)
     {
-        if (auto const& Objects = m_Window->GetRenderer().GetObjects();
-            ImGui::CollapsingHeader(std::format("Loaded Objects: {} ", m_Window->GetRenderer().GetNumObjects()).c_str()))
+        if (auto const &Objects = m_Window->GetRenderer().GetObjects();
+            ImGui::CollapsingHeader(std::format("Loaded Objects: {} ", m_Window->GetRenderer().GetNumObjects()).c_str(), ImGuiTreeNodeFlags_DefaultOpen))
         {
-            for (auto const& Object: Objects)
+            for (auto const &Object: Objects)
             {
                 if (!Object)
                 {

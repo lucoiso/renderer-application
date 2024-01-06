@@ -11,10 +11,10 @@ namespace Application
 {
     export class AppScenePanel final : public RenderCore::Control
     {
-        AppWindow* m_Window {nullptr};
+        AppWindow *m_Window {nullptr};
 
     public:
-        AppScenePanel(Control*, AppWindow*);
+        AppScenePanel(Control *, AppWindow *);
 
     protected:
         void Paint() override;
@@ -23,4 +23,4 @@ namespace Application
         void CreateInfoPanel() const;
         void CreateObjectsList() const;
     };
-}// namespace Application
+} // namespace Application

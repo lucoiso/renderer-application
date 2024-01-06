@@ -1,6 +1,6 @@
 // Author: Lucas Vilas-Boas
 // Year : 2023
-// Repo : https://github.com/lucoiso/VulkanRenderer
+// Repo : https://github.com/lucoiso/renderer-application
 
 module;
 
@@ -22,8 +22,7 @@ import RenderCore.Types.Camera;
 import RenderCore.Types.Object;
 import RenderCore.Utils.Constants;
 
-AppViewport::AppViewport(Control * const Parent, AppWindow * const Window)
-    : Control(Parent), m_Window(Window)
+AppViewport::AppViewport(Control *const Parent, AppWindow *const Window) : Control(Parent), m_Window(Window)
 {
 }
 
@@ -31,7 +30,7 @@ AppViewport::~AppViewport()
 {
     if (!std::empty(m_ViewportDescriptorSets))
     {
-        for (auto const& DescriptorSetIter: m_ViewportDescriptorSets)
+        for (auto const &DescriptorSetIter: m_ViewportDescriptorSets)
         {
             if (DescriptorSetIter != VK_NULL_HANDLE)
             {
@@ -51,7 +50,7 @@ void AppViewport::Refresh()
 
     if (!std::empty(m_ViewportDescriptorSets))
     {
-        for (auto const& DescriptorSetIter: m_ViewportDescriptorSets)
+        for (auto const &DescriptorSetIter: m_ViewportDescriptorSets)
         {
             if (DescriptorSetIter != VK_NULL_HANDLE)
             {
@@ -61,12 +60,12 @@ void AppViewport::Refresh()
         m_ViewportDescriptorSets.clear();
     }
 
-    VkSampler const Sampler{m_Window->GetRenderer().GetSampler()};
-    std::vector const ImageViews{m_Window->GetRenderer().GetViewportRenderImageViews()};
+    VkSampler const Sampler {m_Window->GetRenderer().GetSampler()};
+    std::vector const ImageViews {m_Window->GetRenderer().GetViewportRenderImageViews()};
 
     if (Sampler != VK_NULL_HANDLE && !std::empty(ImageViews))
     {
-        for (auto const& ImageViewIter: ImageViews)
+        for (auto const &ImageViewIter: ImageViews)
         {
             m_ViewportDescriptorSets.push_back(ImGui_ImplVulkan_AddTexture(Sampler, ImageViewIter, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
         }
@@ -75,24 +74,21 @@ void AppViewport::Refresh()
 
 void AppViewport::PrePaint()
 {
-    VkClearValue const& ClearColor{RenderCore::g_ClearValues.at(0U)};
+    VkClearValue const &ClearColor {RenderCore::g_ClearValues.at(0U)};
     ImGui::PushStyleColor(ImGuiCol_WindowBg,
-                          ImVec4{ClearColor.color.float32[0],
-                                 ClearColor.color.float32[1],
-                                 ClearColor.color.float32[2],
-                                 ClearColor.color.float32[3]});
+                          ImVec4 {ClearColor.color.float32[0], ClearColor.color.float32[1], ClearColor.color.float32[2], ClearColor.color.float32[3]});
 
-    ImGui::Begin("Viewport");
+    m_Open = ImGui::Begin("Viewport");
     ImGui::PopStyleColor();
 }
 
 void AppViewport::Paint()
 {
-    if (!std::empty(m_ViewportDescriptorSets))
+    if (m_Open && !std::empty(m_ViewportDescriptorSets))
     {
-        if (std::optional<std::int32_t> const& ImageIndex = m_Window->GetRenderer().GetImageIndex(); ImageIndex.has_value())
+        if (std::optional<std::int32_t> const &ImageIndex = m_Window->GetRenderer().GetImageIndex(); ImageIndex.has_value())
         {
-            constexpr auto ViewportFramePath{"Frame.png"};
+            constexpr auto ViewportFramePath {"Frame.png"};
             if (ImGui::Button("Save Frame Image"))
             {
                 m_Window->GetRenderer().SaveFrameToImageFile(ViewportFramePath);
@@ -103,14 +99,14 @@ void AppViewport::Paint()
                 ImGui::SameLine();
                 if (ImGui::Button("Open Frame Image"))
                 {
-                    std::filesystem::path const FramePath{ViewportFramePath};
-                    std::string const Command{"start " + FramePath.string()};
+                    std::filesystem::path const FramePath {ViewportFramePath};
+                    std::string const Command {"start " + FramePath.string()};
                     std::system(std::data(Command));
                 }
             }
 
-            ImVec2 const ViewportSize{ImGui::GetContentRegionAvail()};
-            ImGui::Image(m_ViewportDescriptorSets.at(ImageIndex.value()), ImVec2{ViewportSize.x, ViewportSize.y});
+            ImVec2 const ViewportSize {ImGui::GetContentRegionAvail()};
+            ImGui::Image(m_ViewportDescriptorSets.at(ImageIndex.value()), ImVec2 {ViewportSize.x, ViewportSize.y});
         }
     }
 }

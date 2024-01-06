@@ -15,6 +15,7 @@ SET(PRIVATE_MODULES
         ${PRIVATE_MODULES_BASE_DIRECTORY}/AppViewport.cppm
         ${PRIVATE_MODULES_BASE_DIRECTORY}/AppScenePanel.cppm
         ${PRIVATE_MODULES_BASE_DIRECTORY}/AppStatusPanel.cppm
+        ${PRIVATE_MODULES_BASE_DIRECTORY}/AppDebugger.cppm
 )
 
 SET(PUBLIC_MODULES
@@ -22,6 +23,7 @@ SET(PUBLIC_MODULES
         ${PUBLIC_MODULES_BASE_DIRECTORY}/AppViewport.ixx
         ${PUBLIC_MODULES_BASE_DIRECTORY}/AppScenePanel.ixx
         ${PUBLIC_MODULES_BASE_DIRECTORY}/AppStatusPanel.ixx
+        ${PUBLIC_MODULES_BASE_DIRECTORY}/AppDebugger.ixx
 )
 
 ADD_EXECUTABLE(${LIBRARY_NAME} ${PRIVATE_MODULES} ${PUBLIC_MODULES})
@@ -46,6 +48,8 @@ TARGET_LINK_LIBRARIES(${LIBRARY_NAME} PRIVATE
         imgui::imgui
         volk::volk_headers
         ImGui-Backend
+
+        RuntimeInfo
 )
 
 TARGET_LINK_LIBRARIES(${LIBRARY_NAME} PUBLIC
