@@ -15,6 +15,7 @@ import Application.Viewport;
 import Application.Debugger;
 import Application.ScenePanel;
 import Application.StatusPanel;
+import Application.RadeonProfiler;
 
 using namespace Application;
 
@@ -25,6 +26,7 @@ AppWindow::AppWindow()
 
     AddIndependentChild<AppDebugger>(this);
     AddIndependentChild<AppViewport>(this);
+    AddIndependentChild<AppRadeonProfiler>(this);
 }
 
 static ImGuiID DockspaceID {0U};
@@ -61,6 +63,7 @@ void AppWindow::SetDockingLayout()
     ImGuiID const LeftID = ImGui::DockBuilderSplitNode(TempNodeID, ImGuiDir_Left, 0.7F, nullptr, &TempNodeID);
     ImGui::DockBuilderDockWindow("Options", LeftID);
     ImGui::DockBuilderDockWindow("Debugging", LeftID);
+    ImGui::DockBuilderDockWindow("Radeon Profiler", LeftID);
 
     ImGui::DockBuilderFinish(DockspaceID);
 }

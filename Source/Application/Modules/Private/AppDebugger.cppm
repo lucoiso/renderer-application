@@ -19,8 +19,6 @@ import RenderCore.Management.AllocationRegister;
 
 using namespace Application;
 
-std::vector<std::string> g_Logs {};
-
 AppDebugger::AppDebugger(Control *const Parent, AppWindow *const Window) : Control(Parent), m_Window(Window)
 {
 }
