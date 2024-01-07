@@ -9,7 +9,7 @@
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
 
-#if defined(_WIN32) && defined(_DEBUG)
+#if defined(_WIN32) && !defined(_DEBUG)
 #include <Windows.h>
 #endif
 
