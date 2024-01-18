@@ -61,9 +61,9 @@ void AppViewport::Refresh()
     }
 
     VkSampler const Sampler {m_Window->GetRenderer().GetSampler()};
-    std::vector const ImageViews {m_Window->GetRenderer().GetViewportRenderImageViews()};
 
-    if (Sampler != VK_NULL_HANDLE && !std::empty(ImageViews))
+    if (std::vector const ImageViews {m_Window->GetRenderer().GetViewportRenderImageViews()};
+        Sampler != VK_NULL_HANDLE && !std::empty(ImageViews))
     {
         for (auto const &ImageViewIter: ImageViews)
         {

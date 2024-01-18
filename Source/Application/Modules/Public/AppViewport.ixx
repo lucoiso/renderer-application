@@ -22,7 +22,7 @@ namespace Application
 
     public:
         AppViewport(Control *, AppWindow *);
-        virtual ~AppViewport() override;
+        ~AppViewport() override;
 
     protected:
         void Refresh() override;
