@@ -29,8 +29,8 @@ AppWindow::AppWindow()
     AddIndependentChild<AppRadeonProfiler>(this);
 }
 
-static ImGuiID DockspaceID {0U};
-static bool IsDockspaceInitialized {false};
+static ImGuiID DockspaceID{0U};
+static bool IsDockspaceInitialized{false};
 
 void AppWindow::PrePaint()
 {

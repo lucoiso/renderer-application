@@ -7,8 +7,6 @@ module;
 #include <filesystem>
 #include <vector>
 
-// Vulkan
-
 // Imgui
 #include <imgui.h>
 #include <imgui_impl_vulkan.h>

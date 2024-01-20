@@ -19,7 +19,9 @@ import RenderCore.Management.AllocationRegister;
 
 using namespace Application;
 
-AppDebugger::AppDebugger(Control *const Parent, AppWindow *const Window) : Control(Parent), m_Window(Window)
+AppDebugger::AppDebugger(Control *const Parent, AppWindow *const Window)
+    : Control(Parent)
+    , m_Window(Window)
 {
 }
 
@@ -52,14 +54,18 @@ void AppDebugger::CreateCallstackPanel()
         {
             for (auto const &Location: Callstack)
             {
-                std::string const FunctionID
-                        = std::format("{}:{}:{}", std::filesystem::path {Location.file_name()}.filename().string(), Location.line(), Location.column());
+                std::string const FunctionID = std::format("{}:{}:{}",
+                                                           std::filesystem::path{Location.file_name()}.filename().string(),
+                                                           Location.line(),
+                                                           Location.column());
+
                 ImGui::Selectable(std::data(FunctionID));
             }
             ImGui::EndListBox();
         }
     }
 }
+
 void AppDebugger::CreateAllocationPanel()
 {
     if (ImGui::CollapsingHeader("GPU Allocations", ImGuiTreeNodeFlags_DefaultOpen))
@@ -72,7 +78,7 @@ void AppDebugger::CreateAllocationPanel()
 
         auto const AllocationTotal = std::accumulate(std::cbegin(Register),
                                                      std::cend(Register),
-                                                     0,
+                                                     std::int32_t{},
                                                      [](std::int32_t const Sum, auto const &Allocation)
                                                      {
                                                          return Sum + static_cast<std::int32_t>(Allocation.AllocationSize);
@@ -83,10 +89,13 @@ void AppDebugger::CreateAllocationPanel()
         {
             for (auto const &Allocations = Register; const auto &[MemoryType, Memory, AllocationSize, UserData]: Allocations)
             {
-                std::ostringstream MemoryAddressStream {};
+                std::ostringstream MemoryAddressStream{};
                 MemoryAddressStream << std::hex << Memory;
 
-                std::string const AllocationID = std::format("Address: {}\nSize: {} bytes\nType: {}", MemoryAddressStream.str(), AllocationSize, MemoryType);
+                std::string const AllocationID = std::format("Address: {}\nSize: {} bytes\nType: {}",
+                                                             MemoryAddressStream.str(),
+                                                             AllocationSize,
+                                                             MemoryType);
 
                 ImGui::Separator();
                 ImGui::Selectable(std::data(AllocationID));

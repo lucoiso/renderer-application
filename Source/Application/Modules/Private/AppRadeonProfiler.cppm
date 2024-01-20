@@ -15,9 +15,11 @@ import RadeonManager.Profiler;
 
 using namespace Application;
 
-RadeonProfiler::ProfileData g_ProfileData {};
+RadeonProfiler::ProfileData g_ProfileData{};
 
-AppRadeonProfiler::AppRadeonProfiler(Control *const Parent, AppWindow *const Window) : Control(Parent), m_Window(Window)
+AppRadeonProfiler::AppRadeonProfiler(Control *const Parent, AppWindow *const Window)
+    : Control(Parent)
+    , m_Window(Window)
 {
     [[maybe_unused]] auto const _ = RadeonManager::Start();
 }
@@ -41,7 +43,7 @@ void AppRadeonProfiler::Paint()
 
         ImGui::SameLine();
 
-        static float UpdateInterval {0.1F};
+        static float UpdateInterval{0.1F};
         ImGui::InputFloat("Interval (seconds)", &UpdateInterval, 0.1F, 1.F, "%.2f");
         UpdateInterval = std::clamp(UpdateInterval, 0.1F, 10.F);
 
