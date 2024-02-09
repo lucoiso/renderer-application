@@ -25,13 +25,9 @@ int main([[maybe_unused]] int const Argc, [[maybe_unused]] char *const Argv[])
     auto const FormatTimeStamp = boost::log::expressions::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%d %H:%M:%S.%f");
     auto const FormatThreadId = boost::log::expressions::attr<boost::log::attributes::current_thread_id::value_type>("ThreadID");
     auto const FormatSeverity = boost::log::expressions::attr<boost::log::trivial::severity_level>("Severity");
-    auto const FormatScope = boost::log::expressions::format_named_scope("Scope",
-                                                                         boost::log::keywords::format = "%n(%f:%l)",
-                                                                         boost::log::keywords::iteration = boost::log::expressions::reverse,
-                                                                         boost::log::keywords::depth = 2);
 
-    boost::log::formatter const LogFormatter = boost::log::expressions::format("[%1%] (%2%) [%3%] [%4%] %5%") % FormatTimeStamp % FormatThreadId
-                                               % FormatSeverity % FormatScope % boost::log::expressions::smessage;
+    boost::log::formatter const LogFormatter = boost::log::expressions::format("[%1%] (%2%) [%3%] %4%") % FormatTimeStamp % FormatThreadId
+                                               % FormatSeverity % boost::log::expressions::smessage;
 
 #ifndef _DEBUG
     boost::log::core::get()->set_filter(boost::log::trivial::severity != boost::log::trivial::debug);

@@ -19,7 +19,10 @@ class RendererApplicationRecipe(ConanFile):
         self.requires("imgui/1.90.1-docking")
 
         # https://conan.io/center/recipes/boost
-        self.requires("boost/[>=1.84]")
+        self.requires("boost/[>=1.84]",
+                      options={
+                          "without_cobalt": True
+                      })
 
         # https://conan.io/center/recipes/benchmark
         self.requires("benchmark/[>=1.8]")
@@ -34,7 +37,7 @@ class RendererApplicationRecipe(ConanFile):
         self.requires("tinygltf/[>=2.8]")
 
         # https://conan.io/center/recipes/glslang
-        self.requires("glslang/11.7.0") # Update when glslang 14.0 is available
+        # self.requires("glslang/11.7.0") # Uncomment when glslang 14.0 is available
 
         # https://conan.io/center/recipes/volk
         self.requires("volk/[>=1.3]")
@@ -46,7 +49,7 @@ class RendererApplicationRecipe(ConanFile):
         self.requires("vulkan-headers/[>=1.3]", override=True)
 
         # https://conan.io/center/recipes/spirv-tools
-        self.requires("spirv-tools/2021.4", override=True) # Update when glslang 14.0 is available
+        # self.requires("spirv-tools/[>=1.3]", override=True) # Uncomment when glslang 14.0 is available
 
     def build_requirements(self):
         self.tool_requires("cmake/[>=3.28]")
