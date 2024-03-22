@@ -25,8 +25,8 @@ void AppStatusPanel::Paint()
     {
         ImGui::Text("Renderer");
 
-        ImGui::Text("Frame Rate: %.3fms", m_Window->GetRenderer().GetFrameTime());
-        ImGui::Text("Frame Time: %.0f FPS", 1.f / m_Window->GetRenderer().GetFrameTime());
+        ImGui::Text("Frame Time: %.3fms", m_Window->GetRenderer().GetFrameTime());
+        ImGui::Text("Frame Rate: %.0f FPS", 1.f / m_Window->GetRenderer().GetFrameTime());
 
         float MaxFPS = 1.0 / m_Window->GetRenderer().GetFrameRateCap();
         ImGui::InputFloat("Max FPS", &MaxFPS, 1.F, 1.F, "%.0f");

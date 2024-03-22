@@ -2,9 +2,9 @@ name: CMake Build Workflow
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ ] # Temporarily disabled
   pull_request:
-    branches: [ "main" ]
+    branches: [ ] # Temporarily disabled
 
 env:
   BUILD_TYPE: Release

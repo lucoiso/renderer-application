@@ -43,7 +43,7 @@ void AppRadeonProfiler::Paint()
 
         ImGui::SameLine();
 
-        static float UpdateInterval{0.1F};
+        static float UpdateInterval{1.F};
         ImGui::InputFloat("Interval (seconds)", &UpdateInterval, 0.1F, 1.F, "%.2f");
         UpdateInterval = std::clamp(UpdateInterval, 0.1F, 10.F);
 
@@ -52,8 +52,8 @@ void AppRadeonProfiler::Paint()
         static auto BeginTime = std::chrono::high_resolution_clock::now();
         auto const CurrentTime = std::chrono::high_resolution_clock::now();
 
-        if (auto const DurationSec = std::chrono::duration_cast<std::chrono::seconds>(CurrentTime - BeginTime);
-            RadeonProfiler::IsRunning() && DurationSec.count() >= UpdateInterval)
+        if (auto const DurationSec = std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime - BeginTime);
+            RadeonProfiler::IsRunning() && static_cast<float>(DurationSec.count()) * 0.001f >= UpdateInterval)
         {
             BeginTime = CurrentTime;
             g_ProfileData = RadeonProfiler::GetProfileData();
