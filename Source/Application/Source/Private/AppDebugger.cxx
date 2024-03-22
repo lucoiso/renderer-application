@@ -79,7 +79,7 @@ void AppDebugger::CreateAllocationPanel()
         auto const AllocationTotal = std::accumulate(std::cbegin(Register),
                                                      std::cend(Register),
                                                      std::int32_t{},
-                                                     [](std::int32_t const Sum, auto const &Allocation)
+                                                     [ ](std::int32_t const Sum, auto const &Allocation)
                                                      {
                                                          return Sum + static_cast<std::int32_t>(Allocation.AllocationSize);
                                                      });

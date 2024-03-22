@@ -17,7 +17,7 @@ import RenderCore.Renderer;
 import RenderCore.Types.Camera;
 import RenderCore.Types.Object;
 
-static std::unordered_map<std::string, std::string> const s_OptionsMap = [](std::string_view const Root, std::vector<std::string> const &Extensions)
+static std::unordered_map<std::string, std::string> const s_OptionsMap = [ ](std::string_view const Root, std::vector<std::string> const &Extensions)
 {
     std::unordered_map<std::string, std::string> OptionsMap {{"None", ""}};
     try
@@ -97,7 +97,7 @@ void AppScenePanel::CreateInfoPanel() const
                     std::accumulate(std::begin(Objects),
                                     std::end(Objects),
                                     0U,
-                                    [](std::uint32_t const Sum, auto const &Object)
+                                    [ ](std::uint32_t const Sum, auto const &Object)
                                     {
                                         return Sum + Object->GetTrianglesCount();
                                     }));

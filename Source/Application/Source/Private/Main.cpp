@@ -20,7 +20,7 @@
 import Application.Window;
 import RadeonManager.Manager;
 
-int main([[maybe_unused]] int const Argc, [[maybe_unused]] char *const Argv[])
+int main([[maybe_unused]] int const Argc, [[maybe_unused]] char *const Argv[ ])
 {
     auto const FormatTimeStamp = boost::log::expressions::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%d %H:%M:%S.%f");
     auto const FormatThreadId = boost::log::expressions::attr<boost::log::attributes::current_thread_id::value_type>("ThreadID");
