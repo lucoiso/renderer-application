@@ -1,5 +1,5 @@
 # -------------- Directories ---------------
-OPTION(LINK_IMGUI "Link ImGui to the project, enabling support for custom viewport" OFF)
+OPTION(VULKAN_RENDERER_ENABLE_IMGUI "Enable ImGui linkage, including support for custom viewport" OFF)
 
 ADD_SUBDIRECTORY(Application)
 ADD_SUBDIRECTORY(VulkanRenderer)
