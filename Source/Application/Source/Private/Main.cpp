@@ -17,8 +17,8 @@
 #include <Windows.h>
 #endif
 
-import Application.Window;
-import RadeonManager.Manager;
+import RenderCore.Window;
+import RenderCore.Renderer;
 
 int main([[maybe_unused]] int const Argc, [[maybe_unused]] char *const Argv[ ])
 {
@@ -47,16 +47,22 @@ int main([[maybe_unused]] int const Argc, [[maybe_unused]] char *const Argv[ ])
 
     std::int32_t Output {EXIT_FAILURE};
 
-    if (Application::AppWindow Window; Window.Initialize(800U, 600U, "Vulkan Renderer: Main Window", RenderCore::InitializationFlags::NONE))
+    if (RenderCore::Window Window; Window.Initialize(800U, 600U, "Vulkan Renderer: Main Window", RenderCore::InitializationFlags::NONE))
     {
+        bool SceneLoaded {false};
         while (Window.IsOpen())
         {
+            if (!SceneLoaded && Window.IsInitialized())
+            {
+                [[maybe_unused]] auto const _ = Window.GetRenderer().LoadScene({ "Resources/Assets/Sponza/glTF/Sponza.gltf" });
+                SceneLoaded = true;
+            }
+
             Window.PollEvents();
         }
 
         Output = EXIT_SUCCESS;
     }
 
-    RadeonManager::Stop();
     return Output;
 }
