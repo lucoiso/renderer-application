@@ -57,7 +57,7 @@ int main([[maybe_unused]] int const Argc, [[maybe_unused]] char *const Argv[ ])
         bool SceneLoaded {false};
         while (Window.IsOpen())
         {
-            if (!SceneLoaded && Window.IsInitialized())
+            if (!SceneLoaded && Window.GetRenderer().IsReady())
             {
                 [[maybe_unused]] auto const _ = Window.GetRenderer().LoadScene({ "Resources/Assets/Sponza/glTF/Sponza.gltf" });
                 SceneLoaded = true;
