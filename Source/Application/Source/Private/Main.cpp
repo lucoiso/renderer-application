@@ -20,7 +20,7 @@
 import Application.Window;
 import RadeonManager.Manager;
 
-int main([[maybe_unused]] int const Argc, [[maybe_unused]] char *const Argv[ ])
+void SetupBoostLog()
 {
     auto const FormatTimeStamp = boost::log::expressions::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%d %H:%M:%S.%f");
     auto const FormatThreadId = boost::log::expressions::attr<boost::log::attributes::current_thread_id::value_type>("ThreadID");
@@ -44,6 +44,11 @@ int main([[maybe_unused]] int const Argc, [[maybe_unused]] char *const Argv[ ])
     LogFileSink->set_formatter(LogFormatter);
 
     boost::log::add_common_attributes();
+}
+
+int main([[maybe_unused]] int const Argc, [[maybe_unused]] char *const Argv[ ])
+{
+    SetupBoostLog();
 
     std::int32_t Output {EXIT_FAILURE};
 
