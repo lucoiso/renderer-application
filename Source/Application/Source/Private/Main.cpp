@@ -1,5 +1,5 @@
 // Author: Lucas Vilas-Boas
-// Year : 2023
+// Year : 2024
 // Repo : https://github.com/lucoiso/renderer-application
 
 #include <boost/date_time/posix_time/ptime.hpp>
