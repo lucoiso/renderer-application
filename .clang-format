@@ -17,7 +17,7 @@ AlwaysBreakAfterDefinitionReturnType: false
 AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: false
 BinPackParameters: false
-BraceWrapping: 
+BraceWrapping:
   AfterCaseLabel: true
   AfterClass: true
   AfterControlStatement: true
@@ -41,7 +41,7 @@ BreakConstructorInitializers: BeforeComma
 BreakConstructorInitializersBeforeComma: false
 ColumnLimit: 160
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
-IncludeCategories: 
+IncludeCategories:
   - Regex: '^<.*'
     Priority: 1
   - Regex: '^".*'
