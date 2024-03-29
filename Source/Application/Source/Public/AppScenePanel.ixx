@@ -21,6 +21,7 @@ namespace Application
 
     private:
         void CreateInfoPanel() const;
+        void CreateIlluminationPanel() const;
         void CreateObjectsList() const;
     };
 } // namespace Application

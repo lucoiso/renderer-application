@@ -15,6 +15,7 @@ using namespace Application;
 
 import RenderCore.Renderer;
 import RenderCore.Types.Camera;
+import RenderCore.Types.Illumination;
 import RenderCore.Types.Object;
 
 static std::unordered_map<std::string, std::string> const s_OptionsMap = [ ](std::string_view const Root, std::vector<std::string> const &Extensions)
@@ -47,7 +48,9 @@ AppScenePanel::AppScenePanel(Control *const Parent, AppWindow *const Window) : C
 
 void AppScenePanel::Paint()
 {
+    CreateIlluminationPanel();
     CreateInfoPanel();
+    CreateObjectsList();
 }
 
 void AppScenePanel::CreateInfoPanel() const
@@ -65,13 +68,13 @@ void AppScenePanel::CreateInfoPanel() const
         {
             bool SelectionChanged = false;
 
-            for (auto const &[Name, Path]: s_OptionsMap)
+            for (auto const &[Name, Path] : s_OptionsMap)
             {
                 bool const bIsSelected = s_SelectedItem == Name;
                 if (ImGui::Selectable(std::data(Name), bIsSelected))
                 {
-                    s_SelectedItem = Name;
-                    s_ModelPath = Path;
+                    s_SelectedItem   = Name;
+                    s_ModelPath      = Path;
                     SelectionChanged = true;
                 }
 
@@ -97,7 +100,7 @@ void AppScenePanel::CreateInfoPanel() const
                     std::accumulate(std::begin(Objects),
                                     std::end(Objects),
                                     0U,
-                                    [ ](std::uint32_t const Sum, auto const &Object)
+                                    [](std::uint32_t const Sum, auto const &Object)
                                     {
                                         return Sum + Object->GetTrianglesCount();
                                     }));
@@ -117,8 +120,25 @@ void AppScenePanel::CreateInfoPanel() const
                 m_Window->GetRenderer().UnloadAllScenes();
             }
         }
+    }
+}
+void AppScenePanel::CreateIlluminationPanel() const
+{
+    if (m_Window && ImGui::CollapsingHeader("Illumination", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        RenderCore::Illumination &IlluminationConfig = m_Window->GetRenderer().GetMutableIllumination();
 
-        CreateObjectsList();
+        float LightPosition[3] = {IlluminationConfig.GetPosition().X, IlluminationConfig.GetPosition().Y, IlluminationConfig.GetPosition().Z};
+        ImGui::InputFloat3("Light Position", &LightPosition[0], "%.2f");
+        IlluminationConfig.SetPosition({LightPosition[0], LightPosition[1], LightPosition[2]});
+
+        float LightColor[3] = {IlluminationConfig.GetColor().X, IlluminationConfig.GetColor().Y, IlluminationConfig.GetColor().Z};
+        ImGui::InputFloat3("Light Color", &LightColor[0], "%.2f");
+        IlluminationConfig.SetColor({std::clamp(LightColor[0], 0.F, FLT_MAX), std::clamp(LightColor[1], 0.F, FLT_MAX), std::clamp(LightColor[2], 0.F, FLT_MAX)});
+
+        float LightIntensity = IlluminationConfig.GetIntensity();
+        ImGui::InputFloat("Light Intensity", &LightIntensity, 0.1f);
+        IlluminationConfig.SetIntensity(std::clamp(LightIntensity, 0.F, FLT_MAX));
     }
 }
 
