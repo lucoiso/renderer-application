@@ -52,7 +52,7 @@ int main([[maybe_unused]] int const Argc, [[maybe_unused]] char *const Argv[ ])
 
     std::int32_t Output {EXIT_FAILURE};
 
-    if (Application::AppWindow Window; Window.Initialize(800U, 600U, "Vulkan Renderer: Main Window", RenderCore::InitializationFlags::NONE))
+    if (Application::AppWindow Window; Window.Initialize(1280U, 600U, "Vulkan Renderer: Main Window", RenderCore::InitializationFlags::NONE))
     {
         while (Window.IsOpen())
         {

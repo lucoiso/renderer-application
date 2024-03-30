@@ -28,7 +28,7 @@ AppViewport::~AppViewport()
 {
     if (!std::empty(m_ViewportDescriptorSets))
     {
-        for (auto const &DescriptorSetIter: m_ViewportDescriptorSets)
+        for (auto const &DescriptorSetIter : m_ViewportDescriptorSets)
         {
             if (DescriptorSetIter != VK_NULL_HANDLE)
             {
@@ -48,7 +48,7 @@ void AppViewport::Refresh()
 
     if (!std::empty(m_ViewportDescriptorSets))
     {
-        for (auto const &DescriptorSetIter: m_ViewportDescriptorSets)
+        for (auto const &DescriptorSetIter : m_ViewportDescriptorSets)
         {
             if (DescriptorSetIter != VK_NULL_HANDLE)
             {
@@ -60,10 +60,9 @@ void AppViewport::Refresh()
 
     VkSampler const Sampler {m_Window->GetRenderer().GetSampler()};
 
-    if (std::vector const ImageViews {m_Window->GetRenderer().GetViewportRenderImageViews()};
-        Sampler != VK_NULL_HANDLE && !std::empty(ImageViews))
+    if (std::vector const ImageViews {m_Window->GetRenderer().GetViewportRenderImageViews()}; Sampler != VK_NULL_HANDLE && !std::empty(ImageViews))
     {
-        for (auto const &ImageViewIter: ImageViews)
+        for (auto const &ImageViewIter : ImageViews)
         {
             m_ViewportDescriptorSets.push_back(ImGui_ImplVulkan_AddTexture(Sampler, ImageViewIter, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
         }
@@ -98,7 +97,7 @@ void AppViewport::Paint()
                 if (ImGui::Button("Open Frame Image"))
                 {
                     std::filesystem::path const FramePath {ViewportFramePath};
-                    std::string const Command {"start " + FramePath.string()};
+                    std::string const           Command {"start " + FramePath.string()};
                     std::system(std::data(Command));
                 }
             }
