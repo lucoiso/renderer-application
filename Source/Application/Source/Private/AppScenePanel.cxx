@@ -94,7 +94,7 @@ void AppScenePanel::CreateInfoPanel() const
                 m_Window->GetRenderer().UnloadAllScenes();
                 if (!std::empty(s_ModelPath))
                 {
-                    [[maybe_unused]] auto const _ = m_Window->GetRenderer().LoadScene(s_ModelPath);
+                    m_Window->GetRenderer().LoadScene(s_ModelPath);
                 }
             }
         }
@@ -106,7 +106,7 @@ void AppScenePanel::CreateInfoPanel() const
                                     0U,
                                     [](std::uint32_t const Sum, auto const &Object)
                                     {
-                                        return Sum + Object->GetTrianglesCount();
+                                        return Sum + Object->GetNumTriangles();
                                     }));
 
         if (!std::empty(Objects))
@@ -114,7 +114,7 @@ void AppScenePanel::CreateInfoPanel() const
             if (ImGui::Button("Reload Scene"))
             {
                 m_Window->GetRenderer().UnloadAllScenes();
-                [[maybe_unused]] auto const _ = m_Window->GetRenderer().LoadScene(s_ModelPath);
+                m_Window->GetRenderer().LoadScene(s_ModelPath);
             }
 
             ImGui::SameLine();
@@ -166,7 +166,7 @@ void AppScenePanel::CreateObjectsList() const
                     ImGui::Text("ID: %d", Object->GetID());
                     ImGui::Text("Name: %s", std::data(Object->GetName()));
                     ImGui::Text("Path: %s", std::data(Object->GetPath()));
-                    ImGui::Text("Triangles Count: %d", Object->GetTrianglesCount());
+                    ImGui::Text("Triangles Count: %d", Object->GetNumTriangles());
 
                     ImGui::Separator();
 
