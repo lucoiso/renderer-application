@@ -59,7 +59,7 @@ void AppScenePanel::Paint()
 
 void AppScenePanel::CreateInfoPanel() const
 {
-    if (m_Window && ImGui::CollapsingHeader("Scene Objects", ImGuiTreeNodeFlags_DefaultOpen))
+    if (m_Window && ImGui::CollapsingHeader("Current Scene", ImGuiTreeNodeFlags_DefaultOpen))
     {
         auto const &Objects = m_Window->GetRenderer().GetObjects();
 
