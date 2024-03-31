@@ -4,7 +4,7 @@
 
 export module Application.Window;
 
-import RenderCore.Window;
+import RenderCore.UserInterface.Window;
 
 namespace Application
 {

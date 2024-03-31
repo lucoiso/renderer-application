@@ -14,14 +14,15 @@ module;
 
 module Application.Debugger;
 
+#ifdef _DEBUG
 import RuntimeInfo.Manager;
-import RenderCore.Management.AllocationRegister;
+#endif
+
+import RenderCore.Subsystem.Allocation;
 
 using namespace Application;
 
-AppDebugger::AppDebugger(Control *const Parent, AppWindow *const Window)
-    : Control(Parent)
-    , m_Window(Window)
+AppDebugger::AppDebugger(Control *const Parent, AppWindow *const Window) : Control(Parent), m_Window(Window)
 {
 }
 
@@ -29,12 +30,16 @@ void AppDebugger::Paint()
 {
     if (ImGui::Begin("Debugging"))
     {
+#ifdef _DEBUG
         CreateCallstackPanel();
+#endif
+
         CreateAllocationPanel();
     }
     ImGui::End();
 }
 
+#ifdef _DEBUG
 void AppDebugger::CreateCallstackPanel()
 {
     if (ImGui::CollapsingHeader("Callstack", ImGuiTreeNodeFlags_DefaultOpen))
@@ -52,12 +57,10 @@ void AppDebugger::CreateCallstackPanel()
 
         if (ImGui::BeginListBox("Callstack"))
         {
-            for (auto const &Location: Callstack)
+            for (auto const &Location : Callstack)
             {
-                std::string const FunctionID = std::format("{}:{}:{}",
-                                                           std::filesystem::path{Location.file_name()}.filename().string(),
-                                                           Location.line(),
-                                                           Location.column());
+                std::string const FunctionID
+                    = std::format("{}:{}:{}", std::filesystem::path {Location.file_name()}.filename().string(), Location.line(), Location.column());
 
                 ImGui::Selectable(std::data(FunctionID));
             }
@@ -65,21 +68,22 @@ void AppDebugger::CreateCallstackPanel()
         }
     }
 }
+#endif
 
 void AppDebugger::CreateAllocationPanel()
 {
     if (ImGui::CollapsingHeader("GPU Allocations", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        auto const &AllocationManager = RenderCore::AllocationRegister::Get();
-        auto const &Register = AllocationManager.GetRegister();
+        auto const &AllocationManager = RenderCore::AllocationSubsystem::Get();
+        auto const &Register          = AllocationManager.GetRegister();
 
         auto const AllocationCount = static_cast<std::int32_t>(std::size(Register));
         ImGui::Text("Allocation Count: %d", AllocationCount);
 
         auto const AllocationTotal = std::accumulate(std::cbegin(Register),
                                                      std::cend(Register),
-                                                     std::int32_t{},
-                                                     [ ](std::int32_t const Sum, auto const &Allocation)
+                                                     std::int32_t {},
+                                                     [](std::int32_t const Sum, auto const &Allocation)
                                                      {
                                                          return Sum + static_cast<std::int32_t>(Allocation.AllocationSize);
                                                      });
@@ -87,15 +91,12 @@ void AppDebugger::CreateAllocationPanel()
 
         if (ImGui::BeginListBox("Allocations"))
         {
-            for (auto const &Allocations = Register; const auto &[MemoryType, Memory, AllocationSize, UserData]: Allocations)
+            for (auto const &Allocations = Register; const auto &[MemoryType, Memory, AllocationSize, UserData] : Allocations)
             {
-                std::ostringstream MemoryAddressStream{};
+                std::ostringstream MemoryAddressStream {};
                 MemoryAddressStream << std::hex << Memory;
 
-                std::string const AllocationID = std::format("Address: {}\nSize: {} bytes\nType: {}",
-                                                             MemoryAddressStream.str(),
-                                                             AllocationSize,
-                                                             MemoryType);
+                std::string const AllocationID = std::format("Address: {}\nSize: {} bytes\nType: {}", MemoryAddressStream.str(), AllocationSize, MemoryType);
 
                 ImGui::Separator();
                 ImGui::Selectable(std::data(AllocationID));

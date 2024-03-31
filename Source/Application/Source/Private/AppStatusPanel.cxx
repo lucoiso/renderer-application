@@ -14,6 +14,7 @@ using namespace Application;
 import RenderCore.Renderer;
 import RenderCore.Types.Camera;
 import RenderCore.Types.Object;
+import RenderCore.Types.RendererStateFlags;
 
 AppStatusPanel::AppStatusPanel(Control *const Parent, AppWindow *const Window) : Control(Parent), m_Window(Window)
 {
@@ -21,7 +22,16 @@ AppStatusPanel::AppStatusPanel(Control *const Parent, AppWindow *const Window) :
 
 void AppStatusPanel::Paint()
 {
-    if (m_Window && ImGui::CollapsingHeader("Status", ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::Begin("Status"))
+    {
+        CreateStatusPanel();
+    }
+    ImGui::End();
+}
+
+void AppStatusPanel::CreateStatusPanel() const
+{
+    if (m_Window && ImGui::CollapsingHeader("Scene Status", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Text("Renderer");
 
@@ -46,8 +56,8 @@ void AppStatusPanel::Paint()
         ImGui::Text("Yaw: %.2f", m_Window->GetRenderer().GetCamera().GetRotation().Yaw);
         ImGui::Text("Pitch: %.2f", m_Window->GetRenderer().GetCamera().GetRotation().Pitch);
         ImGui::Text(
-                "Movement State: %d",
-                static_cast<std::underlying_type_t<RenderCore::CameraMovementStateFlags>>(m_Window->GetRenderer().GetCamera().GetCameraMovementStateFlags()));
+            "Movement State: %d",
+            static_cast<std::underlying_type_t<RenderCore::CameraMovementStateFlags>>(m_Window->GetRenderer().GetCamera().GetCameraMovementStateFlags()));
 
         float CameraSpeed = m_Window->GetRenderer().GetCamera().GetSpeed();
         ImGui::InputFloat("Speed", &CameraSpeed, 0.1F, 1.F, "%.2f");

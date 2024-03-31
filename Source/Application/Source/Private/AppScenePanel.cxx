@@ -18,12 +18,12 @@ import RenderCore.Types.Camera;
 import RenderCore.Types.Illumination;
 import RenderCore.Types.Object;
 
-static std::unordered_map<std::string, std::string> const s_OptionsMap = [ ](std::string_view const Root, std::vector<std::string> const &Extensions)
+static std::unordered_map<std::string, std::string> const s_OptionsMap = [](std::string_view const Root, std::vector<std::string> const &Extensions)
 {
     std::unordered_map<std::string, std::string> OptionsMap {{"None", ""}};
     try
     {
-        for (auto const &Entry: std::filesystem::recursive_directory_iterator(Root))
+        for (auto const &Entry : std::filesystem::recursive_directory_iterator(Root))
         {
             if (Entry.is_regular_file() && std::ranges::find(Extensions, Entry.path().extension()) != std::cend(Extensions))
             {
@@ -38,9 +38,9 @@ static std::unordered_map<std::string, std::string> const s_OptionsMap = [ ](std
     return OptionsMap;
 }("Resources/Assets", {".gltf", ".glb"});
 
-constexpr auto OptionNone = "None";
+constexpr auto     OptionNone     = "None";
 static std::string s_SelectedItem = OptionNone;
-static std::string s_ModelPath = s_OptionsMap.at(s_SelectedItem);
+static std::string s_ModelPath    = s_OptionsMap.at(s_SelectedItem);
 
 AppScenePanel::AppScenePanel(Control *const Parent, AppWindow *const Window) : Control(Parent), m_Window(Window)
 {
@@ -48,14 +48,18 @@ AppScenePanel::AppScenePanel(Control *const Parent, AppWindow *const Window) : C
 
 void AppScenePanel::Paint()
 {
-    CreateIlluminationPanel();
-    CreateInfoPanel();
-    CreateObjectsList();
+    if (ImGui::Begin("Scene"))
+    {
+        CreateIlluminationPanel();
+        CreateInfoPanel();
+        CreateObjectsList();
+    }
+    ImGui::End();
 }
 
 void AppScenePanel::CreateInfoPanel() const
 {
-    if (m_Window && ImGui::CollapsingHeader("Scene", ImGuiTreeNodeFlags_DefaultOpen))
+    if (m_Window && ImGui::CollapsingHeader("Scene Objects", ImGuiTreeNodeFlags_DefaultOpen))
     {
         auto const &Objects = m_Window->GetRenderer().GetObjects();
 
@@ -134,7 +138,8 @@ void AppScenePanel::CreateIlluminationPanel() const
 
         float LightColor[3] = {IlluminationConfig.GetColor().X, IlluminationConfig.GetColor().Y, IlluminationConfig.GetColor().Z};
         ImGui::InputFloat3("Light Color", &LightColor[0], "%.2f");
-        IlluminationConfig.SetColor({std::clamp(LightColor[0], 0.F, FLT_MAX), std::clamp(LightColor[1], 0.F, FLT_MAX), std::clamp(LightColor[2], 0.F, FLT_MAX)});
+        IlluminationConfig.SetColor(
+            {std::clamp(LightColor[0], 0.F, FLT_MAX), std::clamp(LightColor[1], 0.F, FLT_MAX), std::clamp(LightColor[2], 0.F, FLT_MAX)});
 
         float LightIntensity = IlluminationConfig.GetIntensity();
         ImGui::InputFloat("Light Intensity", &LightIntensity, 0.1f);
@@ -149,7 +154,7 @@ void AppScenePanel::CreateObjectsList() const
         if (auto const &Objects = m_Window->GetRenderer().GetObjects();
             ImGui::CollapsingHeader(std::format("Loaded Objects: {} ", m_Window->GetRenderer().GetNumObjects()).c_str(), ImGuiTreeNodeFlags_DefaultOpen))
         {
-            for (auto const &Object: Objects)
+            for (auto const &Object : Objects)
             {
                 if (!Object)
                 {

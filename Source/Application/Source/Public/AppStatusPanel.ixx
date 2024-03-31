@@ -5,7 +5,7 @@
 export module Application.StatusPanel;
 
 import Application.Window;
-import RenderCore.Window.Control;
+import RenderCore.UserInterface.Control;
 
 namespace Application
 {
@@ -18,5 +18,7 @@ namespace Application
 
     protected:
         void Paint() override;
+
+        void CreateStatusPanel() const;
     };
 } // namespace Application

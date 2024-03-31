@@ -5,7 +5,7 @@
 export module Application.Debugger;
 
 import Application.Window;
-import RenderCore.Window.Control;
+import RenderCore.UserInterface.Control;
 
 namespace Application
 {
@@ -19,7 +19,9 @@ namespace Application
     protected:
         void Paint() override;
 
+#ifdef _DEBUG
         static void CreateCallstackPanel();
+#endif
         static void CreateAllocationPanel();
     };
 } // namespace Application

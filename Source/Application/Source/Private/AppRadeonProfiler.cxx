@@ -15,13 +15,10 @@ import RadeonManager.Profiler;
 
 using namespace Application;
 
-RadeonProfiler::ProfileData g_ProfileData{};
+RadeonProfiler::ProfileData g_ProfileData {};
 
-AppRadeonProfiler::AppRadeonProfiler(Control *const Parent, AppWindow *const Window)
-    : Control(Parent)
-    , m_Window(Window)
+AppRadeonProfiler::AppRadeonProfiler(Control *const Parent, AppWindow *const Window) : Control(Parent), m_Window(Window)
 {
-    [[maybe_unused]] auto const _ = RadeonManager::Start();
 }
 
 AppRadeonProfiler::~AppRadeonProfiler()
@@ -43,19 +40,19 @@ void AppRadeonProfiler::Paint()
 
         ImGui::SameLine();
 
-        static float UpdateInterval{1.F};
+        static float UpdateInterval {1.F};
         ImGui::InputFloat("Interval (seconds)", &UpdateInterval, 0.1F, 1.F, "%.2f");
         UpdateInterval = std::clamp(UpdateInterval, 0.1F, 10.F);
 
         ImGui::Separator();
 
-        static auto BeginTime = std::chrono::high_resolution_clock::now();
-        auto const CurrentTime = std::chrono::high_resolution_clock::now();
+        static auto BeginTime   = std::chrono::high_resolution_clock::now();
+        auto const  CurrentTime = std::chrono::high_resolution_clock::now();
 
         if (auto const DurationSec = std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime - BeginTime);
             RadeonProfiler::IsRunning() && static_cast<float>(DurationSec.count()) * 0.001f >= UpdateInterval)
         {
-            BeginTime = CurrentTime;
+            BeginTime     = CurrentTime;
             g_ProfileData = RadeonProfiler::GetProfileData();
         }
 

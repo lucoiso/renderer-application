@@ -16,26 +16,34 @@ import Application.Debugger;
 import Application.ScenePanel;
 import Application.StatusPanel;
 import Application.RadeonProfiler;
+import RadeonManager.Manager;
 
 using namespace Application;
 
 AppWindow::AppWindow()
 {
-    AddChild<AppStatusPanel>(this);
-    AddChild<AppScenePanel>(this);
+    AddIndependentChild<AppStatusPanel>(this);
+    AddIndependentChild<AppScenePanel>(this);
 
+#ifdef _DEBUG
     AddIndependentChild<AppDebugger>(this);
+#endif
+
+    if (RadeonManager::IsLoaded())
+    {
+        AddIndependentChild<AppRadeonProfiler>(this);
+    }
+
     AddIndependentChild<AppViewport>(this);
-    AddIndependentChild<AppRadeonProfiler>(this);
 }
 
-static ImGuiID DockspaceID{0U};
-static bool IsDockspaceInitialized{false};
+static ImGuiID DockspaceID {0U};
+static bool    IsDockspaceInitialized {false};
 
 void AppWindow::PrePaint()
 {
     ImGuiViewport const *const Viewport = ImGui::GetMainViewport();
-    DockspaceID = ImGui::DockSpaceOverViewport(Viewport, ImGuiDockNodeFlags_PassthruCentralNode);
+    DockspaceID                         = ImGui::DockSpaceOverViewport(Viewport, ImGuiDockNodeFlags_PassthruCentralNode);
 
     if (!IsDockspaceInitialized)
     {
@@ -45,23 +53,22 @@ void AppWindow::PrePaint()
         }
         IsDockspaceInitialized = true;
     }
-
-    ImGui::Begin("Options");
 }
 
 void AppWindow::PostPaint()
 {
-    ImGui::End();
 }
 
 void AppWindow::SetDockingLayout()
 {
-    ImGuiID TempNodeID = DockspaceID;
+    ImGuiID                    TempNodeID  = DockspaceID;
     ImGuiDockNode const *const CentralNode = ImGui::DockBuilderGetCentralNode(TempNodeID);
     ImGui::DockBuilderDockWindow("Viewport", CentralNode->ID);
 
-    ImGuiID const LeftID = ImGui::DockBuilderSplitNode(TempNodeID, ImGuiDir_Left, 0.7F, nullptr, &TempNodeID);
-    ImGui::DockBuilderDockWindow("Options", LeftID);
+    ImGuiID const LeftID = ImGui::DockBuilderSplitNode(TempNodeID, ImGuiDir_Left, 0.3F, nullptr, &TempNodeID);
+
+    ImGui::DockBuilderDockWindow("Scene", LeftID);
+    ImGui::DockBuilderDockWindow("Status", LeftID);
     ImGui::DockBuilderDockWindow("Debugging", LeftID);
     ImGui::DockBuilderDockWindow("Radeon Profiler", LeftID);
 

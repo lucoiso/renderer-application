@@ -5,7 +5,7 @@
 export module Application.RadeonProfiler;
 
 import Application.Window;
-import RenderCore.Window.Control;
+import RenderCore.UserInterface.Control;
 
 namespace Application
 {
