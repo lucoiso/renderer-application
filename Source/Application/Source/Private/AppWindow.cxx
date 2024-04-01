@@ -12,7 +12,6 @@ module Application.Window;
 import RenderCore.Types.Transform;
 
 import Application.Viewport;
-import Application.Debugger;
 import Application.ScenePanel;
 import Application.StatusPanel;
 import Application.RadeonProfiler;
@@ -24,10 +23,6 @@ AppWindow::AppWindow()
 {
     AddIndependentChild<AppStatusPanel>(this);
     AddIndependentChild<AppScenePanel>(this);
-
-#ifdef _DEBUG
-    AddIndependentChild<AppDebugger>(this);
-#endif
 
     if (RadeonManager::IsLoaded())
     {
@@ -69,7 +64,6 @@ void AppWindow::SetDockingLayout()
 
     ImGui::DockBuilderDockWindow("Scene", LeftID);
     ImGui::DockBuilderDockWindow("Status", LeftID);
-    ImGui::DockBuilderDockWindow("Debugging", LeftID);
     ImGui::DockBuilderDockWindow("Radeon Profiler", LeftID);
 
     ImGui::DockBuilderFinish(DockspaceID);

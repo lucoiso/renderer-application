@@ -15,7 +15,6 @@ SET(PRIVATE_MODULES
         ${PRIVATE_MODULES_BASE_DIRECTORY}/AppViewport.cxx
         ${PRIVATE_MODULES_BASE_DIRECTORY}/AppScenePanel.cxx
         ${PRIVATE_MODULES_BASE_DIRECTORY}/AppStatusPanel.cxx
-        ${PRIVATE_MODULES_BASE_DIRECTORY}/AppDebugger.cxx
         ${PRIVATE_MODULES_BASE_DIRECTORY}/AppRadeonProfiler.cxx
 )
 
@@ -24,7 +23,6 @@ SET(PUBLIC_MODULES
         ${PUBLIC_MODULES_BASE_DIRECTORY}/AppViewport.ixx
         ${PUBLIC_MODULES_BASE_DIRECTORY}/AppScenePanel.ixx
         ${PUBLIC_MODULES_BASE_DIRECTORY}/AppStatusPanel.ixx
-        ${PUBLIC_MODULES_BASE_DIRECTORY}/AppDebugger.ixx
         ${PUBLIC_MODULES_BASE_DIRECTORY}/AppRadeonProfiler.ixx
 )
 
