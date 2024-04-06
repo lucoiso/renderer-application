@@ -21,19 +21,19 @@ using namespace Application;
 
 AppWindow::AppWindow()
 {
-    AddIndependentChild<AppStatusPanel>(this);
-    AddIndependentChild<AppScenePanel>(this);
+    AddIndependentChild<AppStatusPanel>();
+    AddIndependentChild<AppScenePanel>();
 
     if (RadeonManager::IsLoaded())
     {
-        AddIndependentChild<AppRadeonProfiler>(this);
+        AddIndependentChild<AppRadeonProfiler>();
     }
 
-    AddIndependentChild<AppViewport>(this);
+    AddIndependentChild<AppViewport>();
 }
 
-static ImGuiID DockspaceID {0U};
-static bool    IsDockspaceInitialized {false};
+static ImGuiID DockspaceID { 0U };
+static bool    IsDockspaceInitialized { false };
 
 void AppWindow::PrePaint()
 {
@@ -42,7 +42,8 @@ void AppWindow::PrePaint()
 
     if (!IsDockspaceInitialized)
     {
-        if (ImGuiDockNode const *const Node = ImGui::DockBuilderGetNode(DockspaceID); Node != nullptr && !Node->IsSplitNode())
+        if (ImGuiDockNode const *const Node = ImGui::DockBuilderGetNode(DockspaceID);
+            Node != nullptr && !Node->IsSplitNode())
         {
             SetDockingLayout();
         }

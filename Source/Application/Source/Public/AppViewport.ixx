@@ -17,11 +17,10 @@ namespace Application
     export class AppViewport final : public RenderCore::Control
     {
         std::vector<VkDescriptorSet> m_ViewportDescriptorSets {};
-        AppWindow                   *m_Window {nullptr};
-        bool                         m_Open {false};
+        bool                         m_Open { false };
 
     public:
-         AppViewport(Control *, AppWindow *);
+        AppViewport(Control *);
         ~AppViewport() override;
 
     protected:

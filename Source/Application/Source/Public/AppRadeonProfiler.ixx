@@ -11,10 +11,8 @@ namespace Application
 {
     export class AppRadeonProfiler final : public RenderCore::Control
     {
-        AppWindow *m_Window {nullptr};
-
     public:
-        AppRadeonProfiler(Control *, AppWindow *);
+        AppRadeonProfiler(Control *);
         ~AppRadeonProfiler() override;
 
     protected:

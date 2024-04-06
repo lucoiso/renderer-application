@@ -9,14 +9,15 @@ module;
 
 module Application.StatusPanel;
 
-using namespace Application;
-
 import RenderCore.Renderer;
 import RenderCore.Types.Camera;
 import RenderCore.Types.Object;
 import RenderCore.Types.RendererStateFlags;
 
-AppStatusPanel::AppStatusPanel(Control *const Parent, AppWindow *const Window) : Control(Parent), m_Window(Window)
+using namespace Application;
+
+AppStatusPanel::AppStatusPanel(Control *const Parent)
+    : Control(Parent)
 {
 }
 
@@ -31,40 +32,43 @@ void AppStatusPanel::Paint()
 
 void AppStatusPanel::CreateStatusPanel() const
 {
-    if (m_Window && ImGui::CollapsingHeader("Scene Status", ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader("Scene Status", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Text("Renderer");
 
-        ImGui::Text("Frame Time: %.3fms", m_Window->GetRenderer().GetFrameTime());
-        ImGui::Text("Frame Rate: %.0f FPS", 1.f / m_Window->GetRenderer().GetFrameTime());
+        ImGui::Text("Frame Time: %.3fms", RenderCore::Renderer::GetFrameTime());
+        ImGui::Text("Frame Rate: %.0f FPS", 1.f / RenderCore::Renderer::GetFrameTime());
 
-        float MaxFPS = 1.0 / m_Window->GetRenderer().GetFrameRateCap();
+        float MaxFPS = 1.0 / RenderCore::Renderer::GetFrameRateCap();
         ImGui::InputFloat("Max FPS", &MaxFPS, 1.F, 1.F, "%.0f");
-        m_Window->GetRenderer().SetFrameRateCap(MaxFPS);
+        RenderCore::Renderer::SetFrameRateCap(MaxFPS);
 
-        ImGui::Text("Renderer Flags: %d", static_cast<std::underlying_type_t<RenderCore::RendererStateFlags>>(m_Window->GetRenderer().GetStateFlags()));
+        ImGui::Text("Renderer Flags: %d", static_cast<std::underlying_type_t<RenderCore::RendererStateFlags>>(RenderCore::Renderer::GetStateFlags()));
 
         ImGui::Separator();
 
         ImGui::Text("Camera");
 
         ImGui::Text("Position: %.2f, %.2f, %.2f",
-                    m_Window->GetRenderer().GetCamera().GetPosition().X,
-                    m_Window->GetRenderer().GetCamera().GetPosition().X,
-                    m_Window->GetRenderer().GetCamera().GetPosition().Z);
+                    RenderCore::Renderer::GetCamera().GetPosition().x,
+                    RenderCore::Renderer::GetCamera().GetPosition().y,
+                    RenderCore::Renderer::GetCamera().GetPosition().z);
 
-        ImGui::Text("Yaw: %.2f", m_Window->GetRenderer().GetCamera().GetRotation().Yaw);
-        ImGui::Text("Pitch: %.2f", m_Window->GetRenderer().GetCamera().GetRotation().Pitch);
-        ImGui::Text(
-            "Movement State: %d",
-            static_cast<std::underlying_type_t<RenderCore::CameraMovementStateFlags>>(m_Window->GetRenderer().GetCamera().GetCameraMovementStateFlags()));
+        ImGui::Text("Rotation: %.2f, %.2f, %.2f",
+                    RenderCore::Renderer::GetCamera().GetRotation().x,
+                    RenderCore::Renderer::GetCamera().GetRotation().y,
+                    RenderCore::Renderer::GetCamera().GetRotation().z);
 
-        float CameraSpeed = m_Window->GetRenderer().GetCamera().GetSpeed();
+        ImGui::Text("Movement State: %d",
+                    static_cast<std::underlying_type_t<RenderCore::CameraMovementStateFlags>>(RenderCore::Renderer::GetCamera().
+                        GetCameraMovementStateFlags()));
+
+        float CameraSpeed = RenderCore::Renderer::GetCamera().GetSpeed();
         ImGui::InputFloat("Speed", &CameraSpeed, 0.1F, 1.F, "%.2f");
-        m_Window->GetRenderer().GetMutableCamera().SetSpeed(CameraSpeed);
+        RenderCore::Renderer::GetMutableCamera().SetSpeed(CameraSpeed);
 
-        float CameraSensitivity = m_Window->GetRenderer().GetCamera().GetSensitivity();
-        ImGui::InputFloat("Sensitivity", &CameraSensitivity, 0.1F, 1.F, "%.2f");
-        m_Window->GetRenderer().GetMutableCamera().SetSensitivity(CameraSensitivity);
+        float CameraSensitivity = RenderCore::Renderer::GetCamera().GetSensitivity();
+        ImGui::InputFloat("Sensitivity", &CameraSensitivity, 0.01F, 1.F, "%.2f");
+        RenderCore::Renderer::GetMutableCamera().SetSensitivity(CameraSensitivity);
     }
 }

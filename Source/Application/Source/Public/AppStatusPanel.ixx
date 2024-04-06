@@ -11,10 +11,8 @@ namespace Application
 {
     export class AppStatusPanel final : public RenderCore::Control
     {
-        AppWindow *m_Window {nullptr};
-
     public:
-        AppStatusPanel(Control *, AppWindow *);
+        AppStatusPanel(Control *);
 
     protected:
         void Paint() override;

@@ -11,10 +11,8 @@ namespace Application
 {
     export class AppScenePanel final : public RenderCore::Control
     {
-        AppWindow *m_Window {nullptr};
-
     public:
-        AppScenePanel(Control *, AppWindow *);
+        AppScenePanel(Control *);
 
     protected:
         void Paint() override;
