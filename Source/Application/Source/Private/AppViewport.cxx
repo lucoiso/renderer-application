@@ -73,13 +73,13 @@ void AppViewport::Refresh()
 
 void AppViewport::PrePaint()
 {
-    VkClearValue const &ClearColor { RenderCore::g_ClearValues.at(0U) };
+    VkClearValue const &ClearColor { RenderCore::g_ClearValues.at(1U) };
     ImGui::PushStyleColor(ImGuiCol_WindowBg,
                           ImVec4 {
                                   ClearColor.color.float32[0],
                                   ClearColor.color.float32[1],
                                   ClearColor.color.float32[2],
-                                  ClearColor.color.float32[3]
+                                  1.F
                           });
 
     m_Open = ImGui::Begin("Viewport");
