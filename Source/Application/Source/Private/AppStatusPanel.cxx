@@ -36,7 +36,7 @@ void AppStatusPanel::CreateStatusPanel() const
     {
         ImGui::Text("Renderer");
 
-        ImGui::Text("Frame Time: %.3fms", RenderCore::Renderer::GetFrameTime());
+        ImGui::Text("Frame Time: %.5fms", RenderCore::Renderer::GetFrameTime());
         ImGui::Text("Frame Rate: %.0f FPS", 1.f / RenderCore::Renderer::GetFrameTime());
 
         float MaxFPS = 1.0 / RenderCore::Renderer::GetFrameRateCap();
