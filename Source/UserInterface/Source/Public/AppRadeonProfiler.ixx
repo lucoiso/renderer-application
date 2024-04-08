@@ -2,12 +2,12 @@
 // Year : 2024
 // Repo : https://github.com/lucoiso/renderer-application
 
-export module Application.RadeonProfiler;
+export module UserInterface.RadeonProfiler;
 
-import Application.Window;
+import UserInterface.Window;
 import RenderCore.UserInterface.Control;
 
-namespace Application
+namespace UserInterface
 {
     export class AppRadeonProfiler final : public RenderCore::Control
     {
@@ -18,4 +18,4 @@ namespace Application
     protected:
         void Paint() override;
     };
-} // namespace Application
+} // namespace UserInterface

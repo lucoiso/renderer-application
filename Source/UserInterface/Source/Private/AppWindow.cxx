@@ -7,17 +7,17 @@ module;
 #include <imgui.h>
 #include <imgui_internal.h>
 
-module Application.Window;
+module UserInterface.Window;
 
 import RenderCore.Types.Transform;
 
-import Application.Viewport;
-import Application.ScenePanel;
-import Application.StatusPanel;
-import Application.RadeonProfiler;
+import UserInterface.Viewport;
+import UserInterface.ScenePanel;
+import UserInterface.StatusPanel;
+import UserInterface.RadeonProfiler;
 import RadeonManager.Manager;
 
-using namespace Application;
+using namespace UserInterface;
 
 AppWindow::AppWindow()
 {

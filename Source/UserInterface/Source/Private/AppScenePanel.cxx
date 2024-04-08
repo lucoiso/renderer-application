@@ -10,14 +10,14 @@ module;
 #include <unordered_map>
 #include <glm/gtc/quaternion.hpp>
 
-module Application.ScenePanel;
+module UserInterface.ScenePanel;
 
 import RenderCore.Renderer;
 import RenderCore.Types.Camera;
 import RenderCore.Types.Illumination;
 import RenderCore.Types.Object;
 
-using namespace Application;
+using namespace UserInterface;
 
 static std::unordered_map<std::string, std::string> const s_OptionsMap = [](std::string_view const Root, std::vector<std::string> const &Extensions)
 {
@@ -37,7 +37,7 @@ static std::unordered_map<std::string, std::string> const s_OptionsMap = [](std:
     }
 
     return OptionsMap;
-}("Resources/Assets", { ".gltf", ".glb" });
+}("Models", { ".gltf", ".glb" });
 
 constexpr auto     OptionNone     = "None";
 static std::string s_SelectedItem = OptionNone;

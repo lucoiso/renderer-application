@@ -11,14 +11,14 @@ module;
 #include <imgui.h>
 #include <imgui_impl_vulkan.h>
 
-module Application.Viewport;
+module UserInterface.Viewport;
 
 import RenderCore.Renderer;
 import RenderCore.Types.Camera;
 import RenderCore.Types.Object;
 import RenderCore.Utils.Constants;
 
-using namespace Application;
+using namespace UserInterface;
 
 AppViewport::AppViewport(Control *const Parent)
     : Control(Parent)

@@ -2,12 +2,12 @@
 // Year : 2024
 // Repo : https://github.com/lucoiso/renderer-application
 
-export module Application.ScenePanel;
+export module UserInterface.ScenePanel;
 
-import Application.Window;
+import UserInterface.Window;
 import RenderCore.UserInterface.Control;
 
-namespace Application
+namespace UserInterface
 {
     export class AppScenePanel final : public RenderCore::Control
     {
@@ -22,4 +22,4 @@ namespace Application
         void CreateIlluminationPanel() const;
         void CreateObjectsList() const;
     };
-} // namespace Application
+} // namespace UserInterface

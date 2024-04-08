@@ -2,11 +2,11 @@
 // Year : 2024
 // Repo : https://github.com/lucoiso/renderer-application
 
-export module Application.Window;
+export module UserInterface.Window;
 
 import RenderCore.UserInterface.Window;
 
-namespace Application
+namespace UserInterface
 {
     export class AppWindow final : public RenderCore::Window
     {
@@ -20,4 +20,4 @@ namespace Application
     private:
         static void SetDockingLayout();
     };
-} // namespace Application
+} // namespace UserInterface

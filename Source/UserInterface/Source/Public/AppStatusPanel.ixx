@@ -2,12 +2,12 @@
 // Year : 2024
 // Repo : https://github.com/lucoiso/renderer-application
 
-export module Application.StatusPanel;
+export module UserInterface.StatusPanel;
 
-import Application.Window;
+import UserInterface.Window;
 import RenderCore.UserInterface.Control;
 
-namespace Application
+namespace UserInterface
 {
     export class AppStatusPanel final : public RenderCore::Control
     {
@@ -19,4 +19,4 @@ namespace Application
 
         void CreateStatusPanel() const;
     };
-} // namespace Application
+} // namespace UserInterface

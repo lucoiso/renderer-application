@@ -7,12 +7,12 @@ module;
 #include <Volk/volk.h>
 #include <vector>
 
-export module Application.Viewport;
+export module UserInterface.Viewport;
 
-import Application.Window;
+import UserInterface.Window;
 import RenderCore.UserInterface.Control;
 
-namespace Application
+namespace UserInterface
 {
     export class AppViewport final : public RenderCore::Control
     {
@@ -32,4 +32,4 @@ namespace Application
 
         void PostPaint() override;
     };
-} // namespace Application
+} // namespace UserInterface

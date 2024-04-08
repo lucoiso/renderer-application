@@ -8,12 +8,12 @@ module;
 #include <chrono>
 #include <imgui.h>
 
-module Application.RadeonProfiler;
+module UserInterface.RadeonProfiler;
 
 import RadeonManager.Manager;
 import RadeonManager.Profiler;
 
-using namespace Application;
+using namespace UserInterface;
 
 RadeonProfiler::ProfileData g_ProfileData {};
 

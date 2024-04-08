@@ -7,14 +7,14 @@ module;
 #include <imgui.h>
 #include <type_traits>
 
-module Application.StatusPanel;
+module UserInterface.StatusPanel;
 
 import RenderCore.Renderer;
 import RenderCore.Types.Camera;
 import RenderCore.Types.Object;
 import RenderCore.Types.RendererStateFlags;
 
-using namespace Application;
+using namespace UserInterface;
 
 AppStatusPanel::AppStatusPanel(Control *const Parent)
     : Control(Parent)
