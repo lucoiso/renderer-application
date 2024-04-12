@@ -16,7 +16,6 @@ module UserInterface.Viewport;
 import RenderCore.Renderer;
 import RenderCore.Types.Camera;
 import RenderCore.Types.Object;
-import RenderCore.Utils.Constants;
 
 using namespace UserInterface;
 
@@ -73,14 +72,7 @@ void AppViewport::Refresh()
 
 void AppViewport::PrePaint()
 {
-    VkClearValue const &ClearColor { RenderCore::g_ClearValues.at(1U) };
-    ImGui::PushStyleColor(ImGuiCol_WindowBg,
-                          ImVec4 {
-                                  ClearColor.color.float32[0],
-                                  ClearColor.color.float32[1],
-                                  ClearColor.color.float32[2],
-                                  1.F
-                          });
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4 { 0.F, 0.F, 0.F, 1.F });
 
     m_Open = ImGui::Begin("Viewport");
     ImGui::PopStyleColor();

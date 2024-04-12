@@ -108,12 +108,12 @@ void AppScenePanel::CreateInfoPanel() const
                                     0U,
                                     [](std::uint32_t const Sum, auto const &Object)
                                     {
-                                        return Sum + Object.GetNumTriangles();
+                                        return Sum + Object->GetMesh()->GetNumTriangles();
                                     }));
 
         if (!std::empty(Objects))
         {
-            if (ImGui::Button("Reload Scene"))
+            if (ImGui::Button("Reload"))
             {
                 RenderCore::Renderer::RequestDestroyObjects();
                 RenderCore::Renderer::RequestLoadObject(s_ModelPath);
@@ -121,7 +121,7 @@ void AppScenePanel::CreateInfoPanel() const
 
             ImGui::SameLine();
 
-            if (ImGui::Button("Destroy All"))
+            if (ImGui::Button("Unload"))
             {
                 RenderCore::Renderer::RequestDestroyObjects();
             }
@@ -160,37 +160,32 @@ void AppScenePanel::CreateObjectsList() const
     {
         for (auto &Object : Objects)
         {
-            if (Object.IsPendingDestroy())
+            if (Object->IsPendingDestroy())
             {
                 continue;
             }
 
-            if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object.GetID(), Object.GetName()))))
+            if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object->GetID(), Object->GetName()))))
             {
-                ImGui::Text("ID: %d", Object.GetID());
-                ImGui::Text("Name: %s", std::data(Object.GetName()));
-                ImGui::Text("Path: %s", std::data(Object.GetPath()));
-                ImGui::Text("Triangles Count: %d", Object.GetNumTriangles());
+                ImGui::Text("ID: %d", Object->GetID());
+                ImGui::Text("Name: %s", std::data(Object->GetName()));
+                ImGui::Text("Path: %s", std::data(Object->GetPath()));
+                ImGui::Text("Triangles Count: %d", Object->GetMesh()->GetNumTriangles());
 
                 ImGui::Separator();
 
                 ImGui::Text("Transform");
-                float Position[3] = { Object.GetPosition().x, Object.GetPosition().y, Object.GetPosition().z };
-                ImGui::InputFloat3(std::data(std::format("{} Position", Object.GetName())), &Position[0], "%.2f");
-                Object.SetPosition({ Position[0], Position[1], Position[2] });
+                float Position[3] = { Object->GetPosition().x, Object->GetPosition().y, Object->GetPosition().z };
+                ImGui::InputFloat3(std::data(std::format("{} Position", Object->GetName())), &Position[0], "%.2f");
+                Object->SetPosition({ Position[0], Position[1], Position[2] });
 
-                float Scale[3] = { Object.GetScale().x, Object.GetScale().y, Object.GetScale().z };
-                ImGui::InputFloat3(std::data(std::format("{} Scale", Object.GetName())), &Scale[0], "%.2f");
-                Object.SetScale({ Scale[0], Scale[1], Scale[2] });
+                float Scale[3] = { Object->GetScale().x, Object->GetScale().y, Object->GetScale().z };
+                ImGui::InputFloat3(std::data(std::format("{} Scale", Object->GetName())), &Scale[0], "%.2f");
+                Object->SetScale({ Scale[0], Scale[1], Scale[2] });
 
-                float Rotation[3] = { Object.GetRotation().x, Object.GetRotation().y, Object.GetRotation().z };
-                ImGui::InputFloat3(std::data(std::format("{} Rotation", Object.GetName())), &Rotation[0], "%.2f");
-                Object.SetRotation({ Rotation[0], Rotation[1], Rotation[2] });
-
-                if (ImGui::Button(std::data(std::format("Destroy {}", Object.GetName()))))
-                {
-                    Object.Destroy();
-                }
+                float Rotation[3] = { Object->GetRotation().x, Object->GetRotation().y, Object->GetRotation().z };
+                ImGui::InputFloat3(std::data(std::format("{} Rotation", Object->GetName())), &Rotation[0], "%.2f");
+                Object->SetRotation({ Rotation[0], Rotation[1], Rotation[2] });
             }
         }
     }
