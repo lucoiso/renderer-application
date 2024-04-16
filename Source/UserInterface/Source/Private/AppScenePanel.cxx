@@ -4,6 +4,7 @@
 
 module;
 
+#include <execution>
 #include <filesystem>
 #include <imgui.h>
 #include <numeric>
@@ -50,7 +51,7 @@ AppScenePanel::AppScenePanel(Control *const Parent)
 
 void AppScenePanel::Paint()
 {
-    if (ImGui::Begin("Scene"))
+    if (ImGui::Begin("Scene") && ImGui::IsItemVisible())
     {
         CreateIlluminationPanel();
         CreateInfoPanel();
@@ -102,14 +103,16 @@ void AppScenePanel::CreateInfoPanel() const
         }
 
         ImGui::Text("Loaded Objects: %d", RenderCore::Renderer::GetNumObjects());
-        ImGui::Text("Total Triangles: %d",
-                    std::accumulate(std::begin(Objects),
-                                    std::end(Objects),
-                                    0U,
-                                    [](std::uint32_t const Sum, auto const &Object)
-                                    {
-                                        return Sum + Object->GetMesh()->GetNumTriangles();
-                                    }));
+
+        std::uint32_t const TotalTriangles = std::reduce(std::cbegin(Objects),
+                                                         std::cend(Objects),
+                                                         0U,
+                                                         [](std::uint32_t const Accumulator, auto const &Object)
+                                                         {
+                                                             return Accumulator + Object->GetMesh()->GetNumTriangles();
+                                                         });
+
+        ImGui::Text("Total Triangles: %d", TotalTriangles);
 
         if (!std::empty(Objects))
         {
@@ -155,16 +158,11 @@ void AppScenePanel::CreateIlluminationPanel() const
 
 void AppScenePanel::CreateObjectsList() const
 {
-    if (auto &Objects = RenderCore::Renderer::GetMutableObjects();
+    if (auto const &Objects = RenderCore::Renderer::GetObjects();
         ImGui::CollapsingHeader(std::data(std::format("Loaded Objects: {} ", RenderCore::Renderer::GetNumObjects())), ImGuiTreeNodeFlags_DefaultOpen))
     {
-        for (auto &Object : Objects)
+        for (auto const &Object : Objects)
         {
-            if (Object->IsPendingDestroy())
-            {
-                continue;
-            }
-
             if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object->GetID(), Object->GetName()))))
             {
                 ImGui::Text("ID: %d", Object->GetID());
@@ -186,6 +184,11 @@ void AppScenePanel::CreateObjectsList() const
                 float Rotation[3] = { Object->GetRotation().x, Object->GetRotation().y, Object->GetRotation().z };
                 ImGui::InputFloat3(std::data(std::format("{} Rotation", Object->GetName())), &Rotation[0], "%.2f");
                 Object->SetRotation({ Rotation[0], Rotation[1], Rotation[2] });
+
+                if (!ImGui::IsRectVisible(ImGui::GetItemRectSize()))
+                {
+                    break;
+                }
             }
         }
     }

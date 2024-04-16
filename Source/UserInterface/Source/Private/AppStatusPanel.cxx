@@ -23,7 +23,7 @@ AppStatusPanel::AppStatusPanel(Control *const Parent)
 
 void AppStatusPanel::Paint()
 {
-    if (ImGui::Begin("Status"))
+    if (ImGui::Begin("Status") && ImGui::IsItemVisible())
     {
         CreateStatusPanel();
     }

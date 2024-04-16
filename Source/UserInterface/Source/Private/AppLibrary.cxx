@@ -70,6 +70,7 @@ std::int32_t UserInterface::Execute()
             Window.PollEvents();
         }
 
+        Window.Shutdown();
         Output = EXIT_SUCCESS;
     }
 

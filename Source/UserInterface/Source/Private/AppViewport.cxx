@@ -74,7 +74,7 @@ void AppViewport::PrePaint()
 {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4 { 0.F, 0.F, 0.F, 1.F });
 
-    m_Open = ImGui::Begin("Viewport");
+    m_Open = ImGui::Begin("Viewport") && ImGui::IsItemVisible();
     ImGui::PopStyleColor();
 }
 
@@ -85,23 +85,6 @@ void AppViewport::Paint()
         if (std::optional<std::int32_t> const &ImageIndex = RenderCore::Renderer::GetImageIndex();
             ImageIndex.has_value())
         {
-            constexpr auto ViewportFramePath { "Frame.png" };
-            if (ImGui::Button("Save Frame Image"))
-            {
-                RenderCore::Renderer::SaveFrameAsImage(ViewportFramePath);
-            }
-
-            if (std::filesystem::exists(ViewportFramePath))
-            {
-                ImGui::SameLine();
-                if (ImGui::Button("Open Frame Image"))
-                {
-                    std::filesystem::path const FramePath { ViewportFramePath };
-                    std::string const           Command { "start " + FramePath.string() };
-                    std::system(std::data(Command));
-                }
-            }
-
             ImVec2 const ViewportSize { ImGui::GetContentRegionAvail() };
             ImGui::Image(m_ViewportDescriptorSets.at(ImageIndex.value()), ImVec2 { ViewportSize.x, ViewportSize.y });
         }

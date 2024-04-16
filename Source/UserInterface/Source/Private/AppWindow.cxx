@@ -21,14 +21,13 @@ using namespace UserInterface;
 
 AppWindow::AppWindow()
 {
-    AddIndependentChild<AppStatusPanel>();
-    AddIndependentChild<AppScenePanel>();
-
     if (RadeonManager::IsLoaded())
     {
         AddIndependentChild<AppRadeonProfiler>();
     }
 
+    AddIndependentChild<AppScenePanel>();
+    AddIndependentChild<AppStatusPanel>();
     AddIndependentChild<AppViewport>();
 }
 
