@@ -74,7 +74,8 @@ void AppViewport::PrePaint()
 {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4 { 0.F, 0.F, 0.F, 1.F });
 
-    m_Open = ImGui::Begin("Viewport") && ImGui::IsItemVisible();
+    m_Open = ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove) &&
+             ImGui::IsItemVisible();
     ImGui::PopStyleColor();
 }
 
