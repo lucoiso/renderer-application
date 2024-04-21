@@ -2,24 +2,30 @@
 // Year : 2024
 // Repo : https://github.com/lucoiso/renderer-application
 
+module;
+
+#include <memory>
+
 export module UserInterface.ScenePanel;
 
 import UserInterface.Window;
 import RenderCore.UserInterface.Control;
+import RenderCore.Types.Object;
 
 namespace UserInterface
 {
     export class AppScenePanel final : public RenderCore::Control
     {
     public:
-        AppScenePanel(Control *);
+        explicit AppScenePanel(Control *);
 
     protected:
         void Paint() override;
 
     private:
-        void CreateInfoPanel() const;
-        void CreateIlluminationPanel() const;
-        void CreateObjectsList() const;
+        static void CreateInfoPanel();
+        static void CreateIlluminationPanel();
+        void        CreateObjectsList() const;
+        static void CreateObjectItem(std::shared_ptr<RenderCore::Object> const &);
     };
 } // namespace UserInterface

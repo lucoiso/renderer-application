@@ -12,10 +12,14 @@ namespace UserInterface
     export class AppRadeonProfiler final : public RenderCore::Control
     {
     public:
-        AppRadeonProfiler(Control *);
+        explicit AppRadeonProfiler(Control *);
         ~AppRadeonProfiler() override;
 
     protected:
         void Paint() override;
+
+        static void CreateSettingsPanel();
+        static void UpdateIntervalTime();
+        static void CreateInformationPanel();
     };
 } // namespace UserInterface

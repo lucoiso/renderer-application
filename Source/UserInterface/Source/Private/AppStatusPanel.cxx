@@ -4,6 +4,9 @@
 
 module;
 
+#include <algorithm>
+#include <chrono>
+#include <format>
 #include <imgui.h>
 #include <type_traits>
 
@@ -32,43 +35,85 @@ void AppStatusPanel::Paint()
 
 void AppStatusPanel::CreateStatusPanel() const
 {
-    if (ImGui::CollapsingHeader("Scene Status", ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader("Scene Status", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
     {
-        ImGui::Text("Renderer");
+        CreateRendererPanel();
+        CreateCameraPanel();
+    }
+}
 
-        ImGui::Text("Frame Time: %.5fms", RenderCore::Renderer::GetFrameTime() * 1000.F);
-        ImGui::Text("Frame Rate: %.0f FPS", 1.f / RenderCore::Renderer::GetFrameTime());
+void AppStatusPanel::CreateRendererPanel()
+{
+    if (ImGui::CollapsingHeader("Renderer", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
+    {
+        static float UpdateInterval = 1.F;
+        static float FrameTime      = 0.F;
 
-        float MaxFPS = 1.0 / RenderCore::Renderer::GetFrameRateCap();
-        ImGui::InputFloat("Max FPS", &MaxFPS, 1.F, 1.F, "%.0f");
-        RenderCore::Renderer::SetFrameRateCap(MaxFPS);
+        {
+            static auto LastTime    = std::chrono::high_resolution_clock::now();
+            auto const  CurrentTime = std::chrono::high_resolution_clock::now();
 
-        ImGui::Text("Renderer Flags: %d", static_cast<std::underlying_type_t<RenderCore::RendererStateFlags>>(RenderCore::Renderer::GetStateFlags()));
+            auto const     Milliseconds = std::chrono::duration<double, std::milli>(CurrentTime - LastTime).count();
+            constexpr auto Denominator  = static_cast<double>(std::milli::den);
 
-        ImGui::Separator();
+            if (auto const Seconds = Milliseconds / Denominator;
+                Seconds >= UpdateInterval)
+            {
+                LastTime  = CurrentTime;
+                FrameTime = RenderCore::Renderer::GetFrameTime();
+            }
+        }
 
-        ImGui::Text("Camera");
+        ImGui::Text(std::data(std::format("Frame Time: {:.3f}ms\nFrame Rate: {:.0f} FPS",
+                                          FrameTime <= 0.F ? 0.F : FrameTime * 1000.F,
+                                          FrameTime <= 0.F ? 0.F : 1.f / FrameTime)));
 
-        ImGui::Text("Position: %.2f, %.2f, %.2f",
-                    RenderCore::Renderer::GetCamera().GetPosition().x,
-                    RenderCore::Renderer::GetCamera().GetPosition().y,
-                    RenderCore::Renderer::GetCamera().GetPosition().z);
+        static bool EnableVSync = RenderCore::Renderer::GetUseVSync();
+        bool        NewVSync    = EnableVSync;
+        if (ImGui::Checkbox("VSync Enabled", &NewVSync) && ImGui::IsItemVisible() && EnableVSync != NewVSync)
+        {
+            EnableVSync = NewVSync;
+            RenderCore::Renderer::SetUseVSync(EnableVSync);
+            RenderCore::Renderer::RequestUpdateResources();
+        }
 
-        ImGui::Text("Rotation: %.2f, %.2f, %.2f",
-                    RenderCore::Renderer::GetCamera().GetRotation().x,
-                    RenderCore::Renderer::GetCamera().GetRotation().y,
-                    RenderCore::Renderer::GetCamera().GetRotation().z);
+        static float MaxFPS = 1.0 / RenderCore::Renderer::GetFrameRateCap();
+        if (ImGui::InputFloat("Max FPS", &MaxFPS, 1.F, 1.F, "%.0f") && ImGui::IsItemVisible())
+        {
+            RenderCore::Renderer::SetFrameRateCap(MaxFPS);
+        }
 
-        ImGui::Text("Movement State: %d",
-                    static_cast<std::underlying_type_t<RenderCore::CameraMovementStateFlags>>(RenderCore::Renderer::GetCamera().
-                        GetCameraMovementStateFlags()));
+        if (ImGui::InputFloat("Interval", &UpdateInterval, 0.1F, 1.F, "%.2f") && ImGui::IsItemVisible())
+        {
+            UpdateInterval = std::clamp(UpdateInterval, 0.1F, 5.F);
+        }
+    }
+}
 
-        float CameraSpeed = RenderCore::Renderer::GetCamera().GetSpeed();
-        ImGui::InputFloat("Speed", &CameraSpeed, 0.1F, 1.F, "%.2f");
-        RenderCore::Renderer::GetMutableCamera().SetSpeed(CameraSpeed);
+void AppStatusPanel::CreateCameraPanel()
+{
+    if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
+    {
+        ImGui::Text(std::data(std::format("Position: {:.2f}, {:.2f}, {:.2f}\nRotation: {:.2f}, {:.2f}, {:.2f}\nMovement State: {}",
+                                          RenderCore::Renderer::GetCamera().GetPosition().x,
+                                          RenderCore::Renderer::GetCamera().GetPosition().y,
+                                          RenderCore::Renderer::GetCamera().GetPosition().z,
+                                          RenderCore::Renderer::GetCamera().GetRotation().x,
+                                          RenderCore::Renderer::GetCamera().GetRotation().y,
+                                          RenderCore::Renderer::GetCamera().GetRotation().z,
+                                          static_cast<std::underlying_type_t<RenderCore::CameraMovementStateFlags>>(RenderCore::Renderer::GetCamera().
+                                              GetCameraMovementStateFlags()))));
 
-        float CameraSensitivity = RenderCore::Renderer::GetCamera().GetSensitivity();
-        ImGui::InputFloat("Sensitivity", &CameraSensitivity, 0.01F, 1.F, "%.2f");
-        RenderCore::Renderer::GetMutableCamera().SetSensitivity(CameraSensitivity);
+        static float CameraSpeed = RenderCore::Renderer::GetCamera().GetSpeed();
+        if (ImGui::InputFloat("Speed", &CameraSpeed, 0.1F, 1.F, "%.2f") && ImGui::IsItemVisible())
+        {
+            RenderCore::Renderer::GetMutableCamera().SetSpeed(CameraSpeed);
+        }
+
+        static float CameraSensitivity = RenderCore::Renderer::GetCamera().GetSensitivity();
+        if (ImGui::InputFloat("Sensitivity", &CameraSensitivity, 0.01F, 1.F, "%.2f") && ImGui::IsItemVisible())
+        {
+            RenderCore::Renderer::GetMutableCamera().SetSensitivity(CameraSensitivity);
+        }
     }
 }

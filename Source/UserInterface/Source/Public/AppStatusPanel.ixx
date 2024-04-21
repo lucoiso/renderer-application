@@ -17,6 +17,8 @@ namespace UserInterface
     protected:
         void Paint() override;
 
-        void CreateStatusPanel() const;
+        void        CreateStatusPanel() const;
+        static void CreateRendererPanel();
+        static void CreateCameraPanel();
     };
 } // namespace UserInterface

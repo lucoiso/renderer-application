@@ -20,7 +20,7 @@ namespace UserInterface
         bool                         m_Open { false };
 
     public:
-        AppViewport(Control *);
+        explicit AppViewport(Control *);
         ~AppViewport() override;
 
     protected:

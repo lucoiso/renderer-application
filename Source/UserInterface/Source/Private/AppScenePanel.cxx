@@ -4,12 +4,10 @@
 
 module;
 
-#include <execution>
 #include <filesystem>
 #include <imgui.h>
 #include <numeric>
 #include <unordered_map>
-#include <glm/gtc/quaternion.hpp>
 
 module UserInterface.ScenePanel;
 
@@ -60,9 +58,9 @@ void AppScenePanel::Paint()
     ImGui::End();
 }
 
-void AppScenePanel::CreateInfoPanel() const
+void AppScenePanel::CreateInfoPanel()
 {
-    if (ImGui::CollapsingHeader("Current Scene", ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader("Current Scene", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
     {
         auto const &Objects = RenderCore::Renderer::GetObjects();
 
@@ -102,17 +100,23 @@ void AppScenePanel::CreateInfoPanel() const
             }
         }
 
-        ImGui::Text("Loaded Objects: %d", RenderCore::Renderer::GetNumObjects());
+        static std::uint32_t NumObjects     = 0U;
+        static std::uint32_t TotalTriangles = 0U;
 
-        std::uint32_t const TotalTriangles = std::reduce(std::cbegin(Objects),
-                                                         std::cend(Objects),
-                                                         0U,
-                                                         [](std::uint32_t const Accumulator, auto const &Object)
-                                                         {
-                                                             return Accumulator + Object->GetMesh()->GetNumTriangles();
-                                                         });
+        if (std::uint32_t const NewNumObjects = RenderCore::Renderer::GetNumObjects();
+            NumObjects != NewNumObjects)
+        {
+            NumObjects     = NewNumObjects;
+            TotalTriangles = std::reduce(std::cbegin(Objects),
+                                         std::cend(Objects),
+                                         0U,
+                                         [](std::uint32_t const Accumulator, auto const &Object)
+                                         {
+                                             return Accumulator + Object->GetMesh()->GetNumTriangles();
+                                         });
+        }
 
-        ImGui::Text("Total Triangles: %d", TotalTriangles);
+        ImGui::Text(std::data(std::format("Objects: {}\nTriangles: {}", NumObjects, TotalTriangles)));
 
         if (!std::empty(Objects))
         {
@@ -132,27 +136,37 @@ void AppScenePanel::CreateInfoPanel() const
     }
 }
 
-void AppScenePanel::CreateIlluminationPanel() const
+void AppScenePanel::CreateIlluminationPanel()
 {
-    if (ImGui::CollapsingHeader("Illumination", ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader("Illumination", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
     {
         RenderCore::Illumination &IlluminationConfig = RenderCore::Renderer::GetMutableIllumination();
 
-        float LightPosition[3] = { IlluminationConfig.GetPosition().x, IlluminationConfig.GetPosition().y, IlluminationConfig.GetPosition().z };
-        ImGui::InputFloat3("Light Position", &LightPosition[0], "%.2f");
-        IlluminationConfig.SetPosition({ LightPosition[0], LightPosition[1], LightPosition[2] });
+        static float LightPosition[3] = {
+                IlluminationConfig.GetPosition().x,
+                IlluminationConfig.GetPosition().y,
+                IlluminationConfig.GetPosition().z
+        };
+        if (ImGui::InputFloat3("Light Position", &LightPosition[0], "%.2f") && ImGui::IsItemVisible())
+        {
+            IlluminationConfig.SetPosition({ LightPosition[0], LightPosition[1], LightPosition[2] });
+        }
 
-        float LightColor[3] = { IlluminationConfig.GetColor().x, IlluminationConfig.GetColor().y, IlluminationConfig.GetColor().z };
-        ImGui::InputFloat3("Light Color", &LightColor[0], "%.2f");
-        IlluminationConfig.SetColor({
-                                            std::clamp(LightColor[0], 0.F, FLT_MAX),
-                                            std::clamp(LightColor[1], 0.F, FLT_MAX),
-                                            std::clamp(LightColor[2], 0.F, FLT_MAX)
-                                    });
+        static float LightColor[3] = { IlluminationConfig.GetColor().x, IlluminationConfig.GetColor().y, IlluminationConfig.GetColor().z };
+        if (ImGui::InputFloat3("Light Color", &LightColor[0], "%.2f") && ImGui::IsItemVisible())
+        {
+            IlluminationConfig.SetColor({
+                                                std::clamp(LightColor[0], 0.F, FLT_MAX),
+                                                std::clamp(LightColor[1], 0.F, FLT_MAX),
+                                                std::clamp(LightColor[2], 0.F, FLT_MAX)
+                                        });
+        }
 
-        float LightIntensity = IlluminationConfig.GetIntensity();
-        ImGui::InputFloat("Light Intensity", &LightIntensity, 0.1f);
-        IlluminationConfig.SetIntensity(std::clamp(LightIntensity, 0.F, FLT_MAX));
+        static float LightIntensity = IlluminationConfig.GetIntensity();
+        if (ImGui::InputFloat("Light Intensity", &LightIntensity, 0.1f) && ImGui::IsItemVisible())
+        {
+            IlluminationConfig.SetIntensity(std::clamp(LightIntensity, 0.F, FLT_MAX));
+        }
     }
 }
 
@@ -163,33 +177,39 @@ void AppScenePanel::CreateObjectsList() const
     {
         for (auto const &Object : Objects)
         {
-            if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object->GetID(), Object->GetName()))))
-            {
-                ImGui::Text("ID: %d", Object->GetID());
-                ImGui::Text("Name: %s", std::data(Object->GetName()));
-                ImGui::Text("Path: %s", std::data(Object->GetPath()));
-                ImGui::Text("Triangles Count: %d", Object->GetMesh()->GetNumTriangles());
+            CreateObjectItem(Object);
+        }
+    }
+}
 
-                ImGui::Separator();
+void AppScenePanel::CreateObjectItem(std::shared_ptr<RenderCore::Object> const &Object)
+{
+    if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object->GetID(), Object->GetName()))) && ImGui::IsItemVisible())
+    {
+        ImGui::Text(std::data(std::format("ID: {}\nName: {}\nPath: {}\nTriangles Count: {}",
+                                          Object->GetID(),
+                                          Object->GetName(),
+                                          Object->GetPath(),
+                                          Object->GetMesh()->GetNumTriangles())));
 
-                ImGui::Text("Transform");
-                float Position[3] = { Object->GetPosition().x, Object->GetPosition().y, Object->GetPosition().z };
-                ImGui::InputFloat3(std::data(std::format("{} Position", Object->GetName())), &Position[0], "%.2f");
-                Object->SetPosition({ Position[0], Position[1], Position[2] });
+        ImGui::Separator();
 
-                float Scale[3] = { Object->GetScale().x, Object->GetScale().y, Object->GetScale().z };
-                ImGui::InputFloat3(std::data(std::format("{} Scale", Object->GetName())), &Scale[0], "%.2f");
-                Object->SetScale({ Scale[0], Scale[1], Scale[2] });
+        static float Position[3] = { Object->GetPosition().x, Object->GetPosition().y, Object->GetPosition().z };
+        if (ImGui::InputFloat3(std::data(std::format("{} Position", Object->GetName())), &Position[0], "%.2f") && ImGui::IsItemVisible())
+        {
+            Object->SetPosition({ Position[0], Position[1], Position[2] });
+        }
 
-                float Rotation[3] = { Object->GetRotation().x, Object->GetRotation().y, Object->GetRotation().z };
-                ImGui::InputFloat3(std::data(std::format("{} Rotation", Object->GetName())), &Rotation[0], "%.2f");
-                Object->SetRotation({ Rotation[0], Rotation[1], Rotation[2] });
+        static float Scale[3] = { Object->GetScale().x, Object->GetScale().y, Object->GetScale().z };
+        if (ImGui::InputFloat3(std::data(std::format("{} Scale", Object->GetName())), &Scale[0], "%.2f") && ImGui::IsItemVisible())
+        {
+            Object->SetScale({ Scale[0], Scale[1], Scale[2] });
+        }
 
-                if (!ImGui::IsRectVisible(ImGui::GetItemRectSize()))
-                {
-                    break;
-                }
-            }
+        static float Rotation[3] = { Object->GetRotation().x, Object->GetRotation().y, Object->GetRotation().z };
+        if (ImGui::InputFloat3(std::data(std::format("{} Rotation", Object->GetName())), &Rotation[0], "%.2f") && ImGui::IsItemVisible())
+        {
+            Object->SetRotation({ Rotation[0], Rotation[1], Rotation[2] });
         }
     }
 }
