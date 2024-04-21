@@ -21,11 +21,9 @@ module;
 
 module UserInterface.Library;
 
-import UserInterface.Window;
-
+import RenderCore.Renderer;
 import RenderCore.UserInterface.Window;
 import RenderCore.UserInterface.Window.Flags;
-import RadeonManager.Manager;
 
 using namespace UserInterface;
 
@@ -61,22 +59,23 @@ std::int32_t UserInterface::Execute()
 
     std::int32_t Output {EXIT_FAILURE};
 
-    auto const IsRadeonManagerActive = RadeonManager::Start();
-
-    if (UserInterface::AppWindow Window; Window.Initialize(1280U, 600U, "Renderer Application: Vulkan", RenderCore::InitializationFlags::NONE))
+    if (RenderCore::Window Window; Window.Initialize(1280U, 600U, "Renderer Application: Vulkan", RenderCore::InitializationFlags::NONE))
     {
+        bool IsLoaded = false;
+
         while (Window.IsOpen())
         {
+            if (!IsLoaded && RenderCore::Renderer::IsReady())
+            {
+                IsLoaded = true;
+                RenderCore::Renderer::RequestLoadObject({ "Models/Sponza/glTF/Sponza.gltf" });
+            }
+
             Window.PollEvents();
         }
 
         Window.Shutdown();
         Output = EXIT_SUCCESS;
-    }
-
-    if (IsRadeonManagerActive)
-    {
-        RadeonManager::Stop();
     }
 
     return Output;
