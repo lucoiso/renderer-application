@@ -68,8 +68,6 @@ std::int32_t UserInterface::Execute()
             if (!IsLoaded && RenderCore::Renderer::IsReady())
             {
                 IsLoaded = true;
-                RenderCore::Renderer::SetFrameRateCap(999999.F);
-                RenderCore::Renderer::SetUseVSync(false);
                 RenderCore::Renderer::RequestLoadObject({ "Models/Sponza/glTF/Sponza.gltf" });
             }
 
