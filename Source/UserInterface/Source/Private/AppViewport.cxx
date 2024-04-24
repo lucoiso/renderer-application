@@ -9,13 +9,14 @@ module;
 
 // Imgui
 #include <imgui.h>
-#include <imgui_impl_vulkan.h>
+#include <Volk/volk.h>
 
 module UserInterface.Viewport;
 
 import RenderCore.Renderer;
 import RenderCore.Types.Camera;
 import RenderCore.Types.Object;
+import RenderCore.Integrations.ImGuiVulkanBackend;
 
 using namespace UserInterface;
 
@@ -32,7 +33,7 @@ AppViewport::~AppViewport()
         {
             if (DescriptorSetIter != VK_NULL_HANDLE)
             {
-                ImGui_ImplVulkan_RemoveTexture(DescriptorSetIter);
+                RenderCore::ImGuiVulkanRemoveTexture(DescriptorSetIter);
             }
         }
         m_ViewportDescriptorSets.clear();
@@ -52,7 +53,7 @@ void AppViewport::Refresh()
         {
             if (DescriptorSetIter != VK_NULL_HANDLE)
             {
-                ImGui_ImplVulkan_RemoveTexture(DescriptorSetIter);
+                RenderCore::ImGuiVulkanRemoveTexture(DescriptorSetIter);
             }
         }
         m_ViewportDescriptorSets.clear();
@@ -65,7 +66,7 @@ void AppViewport::Refresh()
     {
         for (auto const &ImageViewIter : ImageViews)
         {
-            m_ViewportDescriptorSets.push_back(ImGui_ImplVulkan_AddTexture(Sampler, ImageViewIter, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
+            m_ViewportDescriptorSets.push_back(RenderCore::ImGuiVulkanAddTexture(Sampler, ImageViewIter, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
         }
     }
 }

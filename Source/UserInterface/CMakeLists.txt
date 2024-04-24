@@ -38,10 +38,7 @@ FIND_PACKAGE(imgui CONFIG REQUIRED)
 
 TARGET_LINK_LIBRARIES(${LIBRARY_NAME} PRIVATE
         Boost::log
-
         imgui::imgui
-        ImGui-Backend
-
         RadeonManager
 )
 
