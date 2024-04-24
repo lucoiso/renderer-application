@@ -49,7 +49,7 @@ AppScenePanel::AppScenePanel(Control *const Parent)
 
 void AppScenePanel::Paint()
 {
-    if (ImGui::Begin("Scene") && ImGui::IsItemVisible())
+    if (ImGui::Begin("Scene"))
     {
         CreateIlluminationPanel();
         CreateInfoPanel();

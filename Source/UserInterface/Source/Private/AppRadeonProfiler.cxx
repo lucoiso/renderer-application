@@ -30,7 +30,7 @@ AppRadeonProfiler::~AppRadeonProfiler()
 
 void AppRadeonProfiler::Paint()
 {
-    if (ImGui::Begin("Radeon Profiler") && ImGui::IsItemVisible())
+    if (ImGui::Begin("Radeon Profiler"))
     {
         if (ImGui::Button(RadeonProfiler::IsRunning() ? "Stop" : "Start") && ImGui::IsItemVisible())
         {

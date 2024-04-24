@@ -26,7 +26,7 @@ AppStatusPanel::AppStatusPanel(Control *const Parent)
 
 void AppStatusPanel::Paint()
 {
-    if (ImGui::Begin("Status") && ImGui::IsItemVisible())
+    if (ImGui::Begin("Status"))
     {
         CreateStatusPanel();
     }
