@@ -12,12 +12,12 @@ namespace UserInterface
     export class AppStatusPanel final : public RenderCore::Control
     {
     public:
-        AppStatusPanel(Control *);
+        explicit AppStatusPanel(Control *);
 
     protected:
         void Paint() override;
 
-        void        CreateStatusPanel() const;
+        static void CreateStatusPanel();
         static void CreateRendererPanel();
         static void CreateCameraPanel();
     };

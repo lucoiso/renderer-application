@@ -61,7 +61,7 @@ void AppViewport::Refresh()
 
     VkSampler const Sampler { RenderCore::Renderer::GetSampler() };
 
-    if (std::vector const ImageViews { RenderCore::Renderer::GetViewportImages() };
+    if (std::vector const ImageViews { RenderCore::Renderer::GetOffscreenImages() };
         Sampler != VK_NULL_HANDLE && !std::empty(ImageViews))
     {
         for (auto const &ImageViewIter : ImageViews)
@@ -75,8 +75,7 @@ void AppViewport::PrePaint()
 {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4 { 0.F, 0.F, 0.F, 1.F });
 
-    m_Open = ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove) &&
-             ImGui::IsItemVisible();
+    m_Open = ImGui::Begin("Viewport") && ImGui::IsItemVisible();
     ImGui::PopStyleColor();
 }
 

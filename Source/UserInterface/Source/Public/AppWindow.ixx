@@ -2,9 +2,14 @@
 // Year : 2024
 // Repo : https://github.com/lucoiso/renderer-application
 
+module;
+
+#include <memory>
+
 export module UserInterface.Window;
 
 import RenderCore.UserInterface.Window;
+import RenderCore.UserInterface.Control;
 
 namespace UserInterface
 {
@@ -15,9 +20,10 @@ namespace UserInterface
 
     protected:
         void PrePaint() override;
-        void PostPaint() override;
+        void OnInitialize() override;
 
     private:
         static void SetDockingLayout();
+        static void SetStyle();
     };
 } // namespace UserInterface

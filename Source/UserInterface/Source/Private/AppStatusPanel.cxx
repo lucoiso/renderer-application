@@ -33,7 +33,7 @@ void AppStatusPanel::Paint()
     ImGui::End();
 }
 
-void AppStatusPanel::CreateStatusPanel() const
+void AppStatusPanel::CreateStatusPanel()
 {
     if (ImGui::CollapsingHeader("Scene Status", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
     {
@@ -68,19 +68,19 @@ void AppStatusPanel::CreateRendererPanel()
                                           FrameTime <= 0.F ? 0.F : FrameTime * 1000.F,
                                           FrameTime <= 0.F ? 0.F : 1.f / FrameTime)));
 
-        static bool EnableVSync = RenderCore::Renderer::GetUseVSync();
+        static bool EnableVSync = RenderCore::Renderer::GetVSync();
         bool        NewVSync    = EnableVSync;
         if (ImGui::Checkbox("VSync Enabled", &NewVSync) && ImGui::IsItemVisible() && EnableVSync != NewVSync)
         {
             EnableVSync = NewVSync;
-            RenderCore::Renderer::SetUseVSync(EnableVSync);
+            RenderCore::Renderer::SetVSync(EnableVSync);
             RenderCore::Renderer::RequestUpdateResources();
         }
 
-        static float MaxFPS = 1.0 / RenderCore::Renderer::GetFrameRateCap();
+        static float MaxFPS = 1.0 / RenderCore::Renderer::GetFPSLimit();
         if (ImGui::InputFloat("Max FPS", &MaxFPS, 1.F, 1.F, "%.0f") && ImGui::IsItemVisible())
         {
-            RenderCore::Renderer::SetFrameRateCap(MaxFPS);
+            RenderCore::Renderer::SetFPSLimit(MaxFPS);
         }
 
         if (ImGui::InputFloat("Interval", &UpdateInterval, 0.1F, 1.F, "%.2f") && ImGui::IsItemVisible())
