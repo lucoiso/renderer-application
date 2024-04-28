@@ -66,7 +66,7 @@ void AppViewport::Refresh()
     {
         for (auto const &ImageViewIter : ImageViews)
         {
-            m_ViewportDescriptorSets.push_back(RenderCore::ImGuiVulkanAddTexture(Sampler, ImageViewIter, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
+            m_ViewportDescriptorSets.push_back(RenderCore::ImGuiVulkanAddTexture(Sampler, ImageViewIter, VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL));
         }
     }
 }
