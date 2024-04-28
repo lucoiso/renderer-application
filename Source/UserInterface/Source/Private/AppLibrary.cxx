@@ -63,7 +63,7 @@ std::int32_t UserInterface::Execute()
 
     auto const IsRadeonManagerActive = RadeonManager::Start();
 
-    if (UserInterface::AppWindow Window; Window.Initialize(1280U, 600U, "Renderer Application: Vulkan", RenderCore::InitializationFlags::NONE))
+    if (UserInterface::AppWindow Window; Window.Initialize(1280U, 600U, "Renderer Application: Vulkan", RenderCore::InitializationFlags::ENABLE_IMGUI))
     {
         while (Window.IsOpen())
         {
