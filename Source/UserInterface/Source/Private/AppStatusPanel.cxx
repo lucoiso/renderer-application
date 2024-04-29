@@ -28,18 +28,10 @@ void AppStatusPanel::Paint()
 {
     if (ImGui::Begin("Status"))
     {
-        CreateStatusPanel();
-    }
-    ImGui::End();
-}
-
-void AppStatusPanel::CreateStatusPanel()
-{
-    if (ImGui::CollapsingHeader("Scene Status", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
-    {
         CreateRendererPanel();
         CreateCameraPanel();
     }
+    ImGui::End();
 }
 
 void AppStatusPanel::CreateRendererPanel()
