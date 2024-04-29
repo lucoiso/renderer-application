@@ -92,7 +92,7 @@ void AppScenePanel::CreateInfoPanel()
 
             if (SelectionChanged)
             {
-                RenderCore::Renderer::RequestDestroyObjects();
+                RenderCore::Renderer::RequestClearScene();
                 if (!std::empty(s_ModelPath))
                 {
                     RenderCore::Renderer::RequestLoadObject(s_ModelPath);
@@ -122,7 +122,7 @@ void AppScenePanel::CreateInfoPanel()
         {
             if (ImGui::Button("Reload"))
             {
-                RenderCore::Renderer::RequestDestroyObjects();
+                RenderCore::Renderer::RequestClearScene();
                 RenderCore::Renderer::RequestLoadObject(s_ModelPath);
             }
 
@@ -130,7 +130,7 @@ void AppScenePanel::CreateInfoPanel()
 
             if (ImGui::Button("Unload"))
             {
-                RenderCore::Renderer::RequestDestroyObjects();
+                RenderCore::Renderer::RequestClearScene();
             }
         }
     }
