@@ -79,6 +79,11 @@ void AppStatusPanel::CreateRendererPanel()
         {
             UpdateInterval = std::clamp(UpdateInterval, 0.1F, 5.F);
         }
+
+        if (ImGui::Button("Print Allocator Status"))
+        {
+            RenderCore::Renderer::PrintMemoryAllocatorStats(true);
+        }
     }
 }
 
