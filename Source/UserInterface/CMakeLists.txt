@@ -37,12 +37,12 @@ FIND_PACKAGE(Boost REQUIRED COMPONENTS log)
 FIND_PACKAGE(imgui CONFIG REQUIRED)
 
 TARGET_LINK_LIBRARIES(${LIBRARY_NAME} PRIVATE
-        Boost::log
-        imgui::imgui
         RadeonManager
 )
 
 TARGET_LINK_LIBRARIES(${LIBRARY_NAME} PUBLIC
+        Boost::log
+        imgui::imgui
         RenderCore
 )
 
