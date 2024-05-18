@@ -75,10 +75,7 @@ void AppStatusPanel::CreateRendererPanel()
             RenderCore::Renderer::SetFPSLimit(MaxFPS);
         }
 
-        if (ImGui::SliderFloat("Interval", &UpdateInterval, 0.1F, 10.F, "%.2f") && ImGui::IsItemVisible())
-        {
-            UpdateInterval = std::clamp(UpdateInterval, 0.1F, 5.F);
-        }
+        ImGui::SliderFloat("Interval", &UpdateInterval, 0.1F, 10.F, "%.2f");
 
         static std::string s_StatusString {};
 
