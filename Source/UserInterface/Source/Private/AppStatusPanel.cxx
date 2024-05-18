@@ -75,14 +75,30 @@ void AppStatusPanel::CreateRendererPanel()
             RenderCore::Renderer::SetFPSLimit(MaxFPS);
         }
 
-        if (ImGui::InputFloat("Interval", &UpdateInterval, 0.1F, 1.F, "%.2f") && ImGui::IsItemVisible())
+        if (ImGui::SliderFloat("Interval", &UpdateInterval, 0.1F, 10.F, "%.2f") && ImGui::IsItemVisible())
         {
             UpdateInterval = std::clamp(UpdateInterval, 0.1F, 5.F);
         }
 
+        static std::string s_StatusString {};
+
         if (ImGui::Button("Print Allocator Status"))
         {
-            RenderCore::Renderer::PrintMemoryAllocatorStats(true);
+            s_StatusString = RenderCore::Renderer::GetMemoryAllocatorStats(true);
+            ImGui::OpenPopup("Allocator Status");
+            ImGui::SetNextWindowSize(ImVec2(800, 600));
+        }
+
+        if (ImGui::BeginPopupModal("Allocator Status"))
+        {
+            ImGui::TextUnformatted(std::data(s_StatusString));
+
+            if (ImGui::Button("Close Allocator Status Panel"))
+            {
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
         }
     }
 }
@@ -102,13 +118,13 @@ void AppStatusPanel::CreateCameraPanel()
                                               GetCameraMovementStateFlags()))));
 
         static float CameraSpeed = RenderCore::Renderer::GetCamera().GetSpeed();
-        if (ImGui::InputFloat("Speed", &CameraSpeed, 0.1F, 1.F, "%.2f") && ImGui::IsItemVisible())
+        if (ImGui::SliderFloat("Speed", &CameraSpeed, 0.1F, 50.F, "%.2f") && ImGui::IsItemVisible())
         {
             RenderCore::Renderer::GetMutableCamera().SetSpeed(CameraSpeed);
         }
 
         static float CameraSensitivity = RenderCore::Renderer::GetCamera().GetSensitivity();
-        if (ImGui::InputFloat("Sensitivity", &CameraSensitivity, 0.01F, 1.F, "%.2f") && ImGui::IsItemVisible())
+        if (ImGui::SliderFloat("Sensitivity", &CameraSensitivity, 0.01F, 10.F, "%.2f") && ImGui::IsItemVisible())
         {
             RenderCore::Renderer::GetMutableCamera().SetSensitivity(CameraSensitivity);
         }

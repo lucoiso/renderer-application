@@ -55,7 +55,7 @@ void AppRadeonProfiler::Paint()
 
 void AppRadeonProfiler::CreateSettingsPanel()
 {
-    if (ImGui::InputFloat("Interval", &g_UpdateInterval, 0.1F, 1.F, "%.2f") && ImGui::IsItemVisible())
+    if (ImGui::SliderFloat("Interval", &g_UpdateInterval, 0.1F, 10.F, "%.2f") && ImGui::IsItemVisible())
     {
         g_UpdateInterval = std::clamp(g_UpdateInterval, 0.1F, 10.F);
     }

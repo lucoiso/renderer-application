@@ -64,23 +64,15 @@ void AppScenePanel::CreateInfoPanel()
     {
         auto const &Objects = RenderCore::Renderer::GetObjects();
 
-        if (std::empty(Objects))
-        {
-            s_SelectedItem = OptionNone;
-        }
-
         if (ImGui::BeginCombo("glTF Scene", std::data(s_SelectedItem)))
         {
-            bool SelectionChanged = false;
-
             for (auto const &[Name, Path] : s_OptionsMap)
             {
                 bool const bIsSelected = s_SelectedItem == Name;
                 if (ImGui::Selectable(std::data(Name), bIsSelected))
                 {
-                    s_SelectedItem   = Name;
-                    s_ModelPath      = Path;
-                    SelectionChanged = true;
+                    s_SelectedItem = Name;
+                    s_ModelPath    = Path;
                 }
 
                 if (bIsSelected)
@@ -89,16 +81,22 @@ void AppScenePanel::CreateInfoPanel()
                 }
             }
             ImGui::EndCombo();
+        }
 
-            if (SelectionChanged)
+        static bool s_AutoUnload = true;
+        if (ImGui::Button("Load Scene") && !std::empty(s_ModelPath))
+        {
+            if (s_AutoUnload)
             {
                 RenderCore::Renderer::RequestClearScene();
-                if (!std::empty(s_ModelPath))
-                {
-                    RenderCore::Renderer::RequestLoadObject(s_ModelPath);
-                }
             }
+
+            RenderCore::Renderer::RequestLoadObject(s_ModelPath);
         }
+
+        ImGui::SameLine();
+
+        ImGui::Checkbox("Auto Unload", &s_AutoUnload);
 
         static std::uint32_t NumObjects     = 0U;
         static std::uint32_t TotalTriangles = 0U;
@@ -147,25 +145,31 @@ void AppScenePanel::CreateIlluminationPanel()
                 IlluminationConfig.GetPosition().y,
                 IlluminationConfig.GetPosition().z
         };
-        if (ImGui::InputFloat3("Light Position", &LightPosition[0], "%.2f") && ImGui::IsItemVisible())
+        if (ImGui::SliderFloat3("Light Position", &LightPosition[0], -180.F, 180.F, "%.2f") && ImGui::IsItemVisible())
         {
             IlluminationConfig.SetPosition({ LightPosition[0], LightPosition[1], LightPosition[2] });
         }
 
         static float LightColor[3] = { IlluminationConfig.GetColor().x, IlluminationConfig.GetColor().y, IlluminationConfig.GetColor().z };
-        if (ImGui::InputFloat3("Light Color", &LightColor[0], "%.2f") && ImGui::IsItemVisible())
+        if (ImGui::SliderFloat3("Light Color", &LightColor[0], 0.F, 1.F, "%.2f") && ImGui::IsItemVisible())
         {
             IlluminationConfig.SetColor({
-                                                std::clamp(LightColor[0], 0.F, FLT_MAX),
-                                                std::clamp(LightColor[1], 0.F, FLT_MAX),
-                                                std::clamp(LightColor[2], 0.F, FLT_MAX)
+                                                std::clamp(LightColor[0], 0.F, 1.F),
+                                                std::clamp(LightColor[1], 0.F, 1.F),
+                                                std::clamp(LightColor[2], 0.F, 1.F)
                                         });
         }
 
         static float LightIntensity = IlluminationConfig.GetIntensity();
-        if (ImGui::InputFloat("Light Intensity", &LightIntensity, 0.1f) && ImGui::IsItemVisible())
+        if (ImGui::SliderFloat("Light Intensity", &LightIntensity, 0.1F, 10.F) && ImGui::IsItemVisible())
         {
             IlluminationConfig.SetIntensity(std::clamp(LightIntensity, 0.F, FLT_MAX));
+        }
+
+        static float AmbientLight = IlluminationConfig.GetAmbient();
+        if (ImGui::SliderFloat("Ambient Light", &AmbientLight, 0.1F, 10.F) && ImGui::IsItemVisible())
+        {
+            IlluminationConfig.SetAmbient(std::clamp(AmbientLight, 0.F, FLT_MAX));
         }
     }
 }
@@ -184,7 +188,7 @@ void AppScenePanel::CreateObjectsList() const
 
 void AppScenePanel::CreateObjectItem(std::shared_ptr<RenderCore::Object> const &Object)
 {
-    if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object->GetID(), Object->GetName()))) && ImGui::IsItemVisible())
+    if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object->GetID(), Object->GetName())), ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Text(std::data(std::format("ID: {}\nName: {}\nPath: {}\nTriangles Count: {}",
                                           Object->GetID(),
@@ -194,22 +198,30 @@ void AppScenePanel::CreateObjectItem(std::shared_ptr<RenderCore::Object> const &
 
         ImGui::Separator();
 
-        static float Position[3] = { Object->GetPosition().x, Object->GetPosition().y, Object->GetPosition().z };
-        if (ImGui::InputFloat3(std::data(std::format("{} Position", Object->GetName())), &Position[0], "%.2f") && ImGui::IsItemVisible())
+        float Position[3] = { Object->GetPosition().x, Object->GetPosition().y, Object->GetPosition().z };
+        if (ImGui::SliderFloat3(std::data(std::format("[{}] {} Position", Object->GetID(), Object->GetName())), &Position[0], -100.F, 100.F, "%.2f")
+            && ImGui::IsItemVisible())
         {
             Object->SetPosition({ Position[0], Position[1], Position[2] });
         }
 
-        static float Scale[3] = { Object->GetScale().x, Object->GetScale().y, Object->GetScale().z };
-        if (ImGui::InputFloat3(std::data(std::format("{} Scale", Object->GetName())), &Scale[0], "%.2f") && ImGui::IsItemVisible())
+        float Scale[3] = { Object->GetScale().x, Object->GetScale().y, Object->GetScale().z };
+        if (ImGui::SliderFloat3(std::data(std::format("[{}] {} Scale", Object->GetID(), Object->GetName())), &Scale[0], 1.F, 100.F, "%.2f") &&
+            ImGui::IsItemVisible())
         {
             Object->SetScale({ Scale[0], Scale[1], Scale[2] });
         }
 
-        static float Rotation[3] = { Object->GetRotation().x, Object->GetRotation().y, Object->GetRotation().z };
-        if (ImGui::InputFloat3(std::data(std::format("{} Rotation", Object->GetName())), &Rotation[0], "%.2f") && ImGui::IsItemVisible())
+        float Rotation[3] = { Object->GetRotation().x, Object->GetRotation().y, Object->GetRotation().z };
+        if (ImGui::SliderFloat(std::data(std::format("[{}] {} Rotation", Object->GetID(), Object->GetName())), &Rotation[0], -180.F, 180.F, "%.2f") &&
+            ImGui::IsItemVisible())
         {
             Object->SetRotation({ Rotation[0], Rotation[1], Rotation[2] });
+        }
+
+        if (ImGui::Button("Destroy"))
+        {
+            Object->Destroy();
         }
     }
 }
