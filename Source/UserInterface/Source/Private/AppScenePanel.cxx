@@ -199,21 +199,21 @@ void AppScenePanel::CreateObjectItem(std::shared_ptr<RenderCore::Object> const &
         ImGui::Separator();
 
         float Position[3] = { Object->GetPosition().x, Object->GetPosition().y, Object->GetPosition().z };
-        if (ImGui::SliderFloat3(std::data(std::format("[{}] {} Position", Object->GetID(), Object->GetName())), &Position[0], -100.F, 100.F, "%.2f")
+        if (ImGui::SliderFloat3(std::data(std::format("[{}] {} Position", Object->GetID(), Object->GetName())), &Position[0], -250.F, 250.F, "%.2f")
             && ImGui::IsItemVisible())
         {
             Object->SetPosition({ Position[0], Position[1], Position[2] });
         }
 
         float Scale[3] = { Object->GetScale().x, Object->GetScale().y, Object->GetScale().z };
-        if (ImGui::SliderFloat3(std::data(std::format("[{}] {} Scale", Object->GetID(), Object->GetName())), &Scale[0], 1.F, 100.F, "%.2f") &&
+        if (ImGui::SliderFloat3(std::data(std::format("[{}] {} Scale", Object->GetID(), Object->GetName())), &Scale[0], 0.001F, 100.F, "%.2f") &&
             ImGui::IsItemVisible())
         {
             Object->SetScale({ Scale[0], Scale[1], Scale[2] });
         }
 
         float Rotation[3] = { Object->GetRotation().x, Object->GetRotation().y, Object->GetRotation().z };
-        if (ImGui::SliderFloat(std::data(std::format("[{}] {} Rotation", Object->GetID(), Object->GetName())), &Rotation[0], -180.F, 180.F, "%.2f") &&
+        if (ImGui::SliderFloat3(std::data(std::format("[{}] {} Rotation", Object->GetID(), Object->GetName())), &Rotation[0], -180.F, 180.F, "%.2f") &&
             ImGui::IsItemVisible())
         {
             Object->SetRotation({ Rotation[0], Rotation[1], Rotation[2] });
