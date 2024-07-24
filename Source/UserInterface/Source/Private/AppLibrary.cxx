@@ -25,6 +25,7 @@ import UserInterface.Window;
 
 import RenderCore.UserInterface.Window;
 import RenderCore.UserInterface.Window.Flags;
+import RenderCore.Utils.EnumHelpers;
 import RadeonManager.Manager;
 
 using namespace UserInterface;
@@ -63,7 +64,11 @@ std::int32_t UserInterface::Execute()
 
     auto const IsRadeonManagerActive = RadeonManager::Start();
 
-    if (UserInterface::AppWindow Window; Window.Initialize(1280U, 600U, "Renderer Application: Vulkan", RenderCore::InitializationFlags::ENABLE_IMGUI))
+    if (UserInterface::AppWindow Window;
+        Window.Initialize(1280U,
+                          600U,
+                          "Renderer Application: Vulkan",
+                          RenderCore::InitializationFlags::ENABLE_IMGUI | RenderCore::InitializationFlags::ENABLE_DOCKING))
     {
         while (Window.IsOpen())
         {
