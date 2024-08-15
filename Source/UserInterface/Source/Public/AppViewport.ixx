@@ -4,7 +4,6 @@
 
 module;
 
-#include <vector>
 #include <Volk/volk.h>
 
 export module UserInterface.Viewport;

@@ -4,10 +4,7 @@
 
 module;
 
-#include <filesystem>
 #include <imgui.h>
-#include <numeric>
-#include <unordered_map>
 
 module UserInterface.ScenePanel;
 
@@ -18,16 +15,19 @@ import RenderCore.Types.Object;
 
 using namespace UserInterface;
 
-static std::unordered_map<std::string, std::string> const s_OptionsMap = [](std::string_view const Root, std::vector<std::string> const &Extensions)
+static std::unordered_map<strzilla::string, strzilla::string> const s_OptionsMap = [](strzilla::string_view const Root, std::vector<strzilla::string> const &Extensions)
 {
-    std::unordered_map<std::string, std::string> OptionsMap { { "None", "" } };
+    std::unordered_map<strzilla::string, strzilla::string> OptionsMap { { "None", "" } };
     try
     {
-        for (auto const &Entry : std::filesystem::recursive_directory_iterator(Root))
+        for (auto const &Entry : std::filesystem::recursive_directory_iterator(std::data(Root)))
         {
-            if (Entry.is_regular_file() && std::ranges::find(Extensions, Entry.path().extension()) != std::cend(Extensions))
+            if (Entry.is_regular_file())
             {
-                OptionsMap.emplace(Entry.path().stem().string(), Entry.path().string());
+                if (std::find(std::execution::unseq, std::cbegin(Extensions), std::cend(Extensions), strzilla::string { Entry.path().extension().string() }) != std::cend(Extensions))
+                {
+                    OptionsMap.emplace(Entry.path().stem().string(), Entry.path().string());
+                }
             }
         }
     }
@@ -38,9 +38,9 @@ static std::unordered_map<std::string, std::string> const s_OptionsMap = [](std:
     return OptionsMap;
 }("Models", { ".gltf", ".glb" });
 
-constexpr auto     OptionNone     = "None";
-static std::string s_SelectedItem = OptionNone;
-static std::string s_ModelPath    = s_OptionsMap.at(s_SelectedItem);
+constexpr auto          OptionNone     = "None";
+static strzilla::string s_SelectedItem = OptionNone;
+static strzilla::string s_ModelPath    = s_OptionsMap.at(s_SelectedItem);
 
 AppScenePanel::AppScenePanel(Control *const Parent)
     : Control(Parent)
@@ -145,6 +145,7 @@ void AppScenePanel::CreateIlluminationPanel()
                 IlluminationConfig.GetPosition().y,
                 IlluminationConfig.GetPosition().z
         };
+
         if (ImGui::SliderFloat3("Light Position", &LightPosition[0], -180.F, 180.F, "%.2f") && ImGui::IsItemVisible())
         {
             IlluminationConfig.SetPosition({ LightPosition[0], LightPosition[1], LightPosition[2] });
@@ -188,32 +189,32 @@ void AppScenePanel::CreateObjectsList() const
 
 void AppScenePanel::CreateObjectItem(std::shared_ptr<RenderCore::Object> const &Object)
 {
-    if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object->GetID(), Object->GetName())), ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object->GetID(), std::data(Object->GetName()))), ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Text(std::data(std::format("ID: {}\nName: {}\nPath: {}\nTriangles Count: {}",
                                           Object->GetID(),
-                                          Object->GetName(),
-                                          Object->GetPath(),
+                                          std::data(Object->GetName()),
+                                          std::data(Object->GetPath()),
                                           Object->GetMesh()->GetNumTriangles())));
 
         ImGui::Separator();
 
         float Position[3] = { Object->GetPosition().x, Object->GetPosition().y, Object->GetPosition().z };
-        if (ImGui::SliderFloat3(std::data(std::format("[{}] {} Position", Object->GetID(), Object->GetName())), &Position[0], -250.F, 250.F, "%.2f")
+        if (ImGui::SliderFloat3(std::data(std::format("[{}] Position", Object->GetID())), &Position[0], -100.F, 100.F, "%.2f")
             && ImGui::IsItemVisible())
         {
             Object->SetPosition({ Position[0], Position[1], Position[2] });
         }
 
         float Scale[3] = { Object->GetScale().x, Object->GetScale().y, Object->GetScale().z };
-        if (ImGui::SliderFloat3(std::data(std::format("[{}] {} Scale", Object->GetID(), Object->GetName())), &Scale[0], 0.001F, 100.F, "%.2f") &&
+        if (ImGui::SliderFloat3(std::data(std::format("[{}] Scale", Object->GetID())), &Scale[0], 0.01F, 10.F, "%.2f") &&
             ImGui::IsItemVisible())
         {
             Object->SetScale({ Scale[0], Scale[1], Scale[2] });
         }
 
         float Rotation[3] = { Object->GetRotation().x, Object->GetRotation().y, Object->GetRotation().z };
-        if (ImGui::SliderFloat3(std::data(std::format("[{}] {} Rotation", Object->GetID(), Object->GetName())), &Rotation[0], -180.F, 180.F, "%.2f") &&
+        if (ImGui::SliderFloat3(std::data(std::format("[{}] Rotation", Object->GetID())), &Rotation[0], 0.F, 359.9F, "%.2f") &&
             ImGui::IsItemVisible())
         {
             Object->SetRotation({ Rotation[0], Rotation[1], Rotation[2] });

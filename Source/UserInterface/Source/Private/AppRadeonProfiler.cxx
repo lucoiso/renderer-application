@@ -4,8 +4,6 @@
 
 module;
 
-#include <algorithm>
-#include <chrono>
 #include <imgui.h>
 
 module UserInterface.RadeonProfiler;

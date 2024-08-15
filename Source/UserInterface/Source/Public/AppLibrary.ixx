@@ -4,7 +4,6 @@
 
 module;
 
-#include <cstdint>
 #include "UserInterfaceModule.hpp"
 
 export module UserInterface.Library;

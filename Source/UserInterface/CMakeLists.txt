@@ -16,14 +16,25 @@ ADD_LIBRARY(${LIBRARY_NAME} SHARED ${PRIVATE_MODULES})
 SET_TARGET_PROPERTIES(${LIBRARY_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
 TARGET_SOURCES(${LIBRARY_NAME}
-               PUBLIC
-               FILE_SET cxx_public_modules
-               TYPE CXX_MODULES
-               BASE_DIRS ${PUBLIC_MODULES_BASE_DIRECTORY}
-               FILES ${PUBLIC_MODULES}
+        PUBLIC
+        FILE_SET cxx_public_modules
+        TYPE CXX_MODULES
+        BASE_DIRS ${PUBLIC_MODULES_BASE_DIRECTORY}
+        FILES ${PUBLIC_MODULES}
+)
+
+FILE(GLOB_RECURSE PUBLIC_HEADERS "${PUBLIC_MODULES_BASE_DIRECTORY}/*.hpp")
+
+TARGET_SOURCES(${LIBRARY_NAME}
+        PUBLIC
+        FILE_SET cxx_public_headers
+        TYPE HEADERS
+        BASE_DIRS ${PUBLIC_MODULES_BASE_DIRECTORY}
+        FILES ${PUBLIC_HEADERS}
 )
 
 TARGET_INCLUDE_DIRECTORIES(${LIBRARY_NAME} PRIVATE ${PRIVATE_MODULES_BASE_DIRECTORY})
+TARGET_INCLUDE_DIRECTORIES(${LIBRARY_NAME} PUBLIC ${PUBLIC_MODULES_BASE_DIRECTORY})
 
 IF (CMAKE_BUILD_TYPE MATCHES "Debug")
     TARGET_LINK_LIBRARIES(${LIBRARY_NAME} PRIVATE $ENV{VULKAN_SDK}/Lib/volkd.lib)
@@ -37,13 +48,13 @@ FIND_PACKAGE(Boost REQUIRED COMPONENTS log)
 FIND_PACKAGE(imgui CONFIG REQUIRED)
 
 TARGET_LINK_LIBRARIES(${LIBRARY_NAME} PRIVATE
-                      RadeonManager
+        RadeonManager
 )
 
 TARGET_LINK_LIBRARIES(${LIBRARY_NAME} PUBLIC
-                      Boost::log
-                      imgui::imgui
-                      RenderCore
+        Boost::log
+        imgui::imgui
+        RenderCore
 )
 
 INCLUDE(GNUInstallDirs)
@@ -63,6 +74,6 @@ FETCHCONTENT_DECLARE(
 FETCHCONTENT_MAKEAVAILABLE(gltf_samples)
 
 ADD_CUSTOM_COMMAND(TARGET ${LIBRARY_NAME} POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${gltf_samples_SOURCE_DIR}/Models"
-                   "$<TARGET_FILE_DIR:${LIBRARY_NAME}>/Models"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${gltf_samples_SOURCE_DIR}/Models"
+        "$<TARGET_FILE_DIR:${LIBRARY_NAME}>/Models"
 )

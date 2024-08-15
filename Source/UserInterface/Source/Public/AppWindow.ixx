@@ -4,8 +4,6 @@
 
 module;
 
-#include <memory>
-
 export module UserInterface.Window;
 
 import RenderCore.UserInterface.Window;

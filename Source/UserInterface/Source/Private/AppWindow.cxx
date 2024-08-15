@@ -38,7 +38,7 @@ bool    g_EnableViewport { true };
 void AppWindow::PrePaint()
 {
     ImGuiViewport const *const Viewport = ImGui::GetMainViewport();
-    g_DockspaceID                       = ImGui::DockSpaceOverViewport(Viewport, ImGuiDockNodeFlags_PassthruCentralNode);
+    g_DockspaceID                       = ImGui::DockSpaceOverViewport(ImGuiID { 0U }, Viewport, ImGuiDockNodeFlags_PassthruCentralNode);
 
     if (!g_IsDockspaceInitialized)
     {
