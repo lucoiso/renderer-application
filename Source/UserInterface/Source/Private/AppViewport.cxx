@@ -4,9 +4,6 @@
 
 module;
 
-#include <imgui.h>
-#include <Volk/volk.h>
-
 module UserInterface.Viewport;
 
 import RenderCore.Renderer;

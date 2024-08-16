@@ -4,7 +4,6 @@
 
 module;
 
-#include <imgui.h>
 #include <imgui_internal.h>
 
 module UserInterface.Window;

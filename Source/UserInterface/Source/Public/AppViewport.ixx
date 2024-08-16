@@ -4,8 +4,6 @@
 
 module;
 
-#include <Volk/volk.h>
-
 export module UserInterface.Viewport;
 
 import UserInterface.Window;
