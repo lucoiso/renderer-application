@@ -67,7 +67,9 @@ std::int32_t UserInterface::Execute()
         Window.Initialize(1280U,
                           600U,
                           "Renderer Application: Vulkan",
-                          RenderCore::InitializationFlags::ENABLE_IMGUI | RenderCore::InitializationFlags::ENABLE_DOCKING))
+                          RenderCore::InitializationFlags::ENABLE_IMGUI   |
+                          RenderCore::InitializationFlags::ENABLE_DOCKING |
+                          RenderCore::InitializationFlags::ENABLE_VIEWPORTS))
     {
         while (Window.IsOpen())
         {
