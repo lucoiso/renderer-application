@@ -9,6 +9,7 @@ module UserInterface.Viewport;
 import RenderCore.Renderer;
 import RenderCore.Types.Camera;
 import RenderCore.Types.Object;
+import RenderCore.Utils.Constants;
 import RenderCore.Integrations.ImGuiVulkanBackend;
 
 using namespace UserInterface;
@@ -59,7 +60,7 @@ void AppViewport::Refresh()
     {
         for (auto const &ImageViewIter : ImageViews)
         {
-            m_ViewportDescriptorSets.push_back(RenderCore::ImGuiVulkanAddTexture(Sampler, ImageViewIter, VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL));
+            m_ViewportDescriptorSets.push_back(RenderCore::ImGuiVulkanAddTexture(Sampler, ImageViewIter, RenderCore::g_ReadLayout));
         }
     }
 }
