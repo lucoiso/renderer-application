@@ -13,6 +13,7 @@ module;
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
+#include <easy/profiler.h>
 
 #if defined(_WIN32) && !defined(_DEBUG)
     #include <Windows.h>
@@ -31,23 +32,25 @@ using namespace UserInterface;
 
 void SetupBoostLog()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     auto const FormatTimeStamp = boost::log::expressions::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%d %H:%M:%S.%f");
     auto const FormatThreadId  = boost::log::expressions::attr<boost::log::attributes::current_thread_id::value_type>("ThreadID");
     auto const FormatSeverity  = boost::log::expressions::attr<boost::log::trivial::severity_level>("Severity");
 
-    boost::log::formatter const LogFormatter
-        = boost::log::expressions::format("[%1%] (%2%) [%3%] %4%") % FormatTimeStamp % FormatThreadId % FormatSeverity % boost::log::expressions::smessage;
+    boost::log::formatter const LogFormatter = boost::log::expressions::format("[%1%] (%2%) [%3%] %4%") % FormatTimeStamp % FormatThreadId %
+                                               FormatSeverity % boost::log::expressions::smessage;
 
-    #ifndef _DEBUG
+#ifndef _DEBUG
     boost::log::core::get()->set_filter(boost::log::trivial::severity != boost::log::trivial::debug);
 
     #ifdef _WIN32
     ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
     #endif
-    #else
+#else
     auto const ConsoleSink = boost::log::add_console_log(std::clog);
     ConsoleSink->set_formatter(LogFormatter);
-    #endif
+#endif
 
     auto const LogFileSink = boost::log::add_file_log("renderer-application.log");
     LogFileSink->set_formatter(LogFormatter);
@@ -59,7 +62,7 @@ std::int32_t UserInterface::Execute()
 {
     SetupBoostLog();
 
-    std::int32_t Output {EXIT_FAILURE};
+    std::int32_t Output{EXIT_FAILURE};
 
     auto const IsRadeonManagerActive = RadeonManager::Start();
 
@@ -67,9 +70,8 @@ std::int32_t UserInterface::Execute()
         Window.Initialize(1280U,
                           600U,
                           "Renderer Application: Vulkan",
-                          RenderCore::InitializationFlags::ENABLE_IMGUI   |
-                          RenderCore::InitializationFlags::ENABLE_DOCKING |
-                          RenderCore::InitializationFlags::ENABLE_VIEWPORTS))
+                          RenderCore::InitializationFlags::ENABLE_IMGUI | RenderCore::InitializationFlags::ENABLE_DOCKING |
+                                  RenderCore::InitializationFlags::ENABLE_VIEWPORTS))
     {
         while (Window.IsOpen())
         {
@@ -83,6 +85,14 @@ std::int32_t UserInterface::Execute()
     if (IsRadeonManagerActive)
     {
         RadeonManager::Stop();
+    }
+
+    if (profiler::isListening())
+    {
+        profiler::dumpBlocksToFile("renderer-application.prof");
+
+        profiler::stopListen();
+        EASY_PROFILER_DISABLE
     }
 
     return Output;

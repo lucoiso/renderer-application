@@ -20,16 +20,40 @@ AppStatusPanel::AppStatusPanel(Control *const Parent)
 
 void AppStatusPanel::Paint()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     if (ImGui::Begin("Status"))
     {
         CreateRendererPanel();
         CreateCameraPanel();
+
+        if (ImGui::CollapsingHeader("Profiler", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
+        {
+            if (bool const IsListening = profiler::isListening();
+                ImGui::Button(IsListening ? "Stop Listening" : "Start Listening"))
+            {
+                if (IsListening)
+                {
+                    profiler::dumpBlocksToFile("renderer-application.prof");
+
+                    profiler::stopListen();
+                    EASY_PROFILER_DISABLE
+                }
+                else
+                {
+                    EASY_PROFILER_ENABLE
+                    profiler::startListen();
+                }
+            }
+        }
     }
     ImGui::End();
 }
 
 void AppStatusPanel::CreateRendererPanel()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     if (ImGui::CollapsingHeader("Renderer", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
     {
         static float UpdateInterval = 1.F;
@@ -96,6 +120,8 @@ void AppStatusPanel::CreateRendererPanel()
 
 void AppStatusPanel::CreateCameraPanel()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
     {
         ImGui::Text(std::data(std::format("Position: {:.2f}, {:.2f}, {:.2f}\nRotation: {:.2f}, {:.2f}, {:.2f}\nMovement State: {}",

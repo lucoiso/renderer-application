@@ -26,6 +26,8 @@ AppRadeonProfiler::~AppRadeonProfiler()
 
 void AppRadeonProfiler::Paint()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     if (ImGui::Begin("Radeon Profiler"))
     {
         if (ImGui::Button(RadeonProfiler::IsRunning() ? "Stop" : "Start") && ImGui::IsItemVisible())
@@ -51,6 +53,8 @@ void AppRadeonProfiler::Paint()
 
 void AppRadeonProfiler::CreateSettingsPanel()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     if (ImGui::SliderFloat("Interval", &g_UpdateInterval, 0.1F, 10.F, "%.2f") && ImGui::IsItemVisible())
     {
         g_UpdateInterval = std::clamp(g_UpdateInterval, 0.1F, 10.F);
@@ -59,6 +63,8 @@ void AppRadeonProfiler::CreateSettingsPanel()
 
 void AppRadeonProfiler::UpdateIntervalTime()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     static auto LastTime    = std::chrono::high_resolution_clock::now();
     auto const  CurrentTime = std::chrono::high_resolution_clock::now();
 
@@ -75,6 +81,8 @@ void AppRadeonProfiler::UpdateIntervalTime()
 
 void AppRadeonProfiler::CreateInformationPanel()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     if (ImGui::CollapsingHeader("System Metrics", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
     {
         ImGui::Text("System Time: %lld", g_ProfileData.TimeStamp);

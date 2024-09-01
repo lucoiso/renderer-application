@@ -13,7 +13,8 @@ import RenderCore.Types.Object;
 
 using namespace UserInterface;
 
-static std::unordered_map<strzilla::string, strzilla::string> const s_OptionsMap = [](strzilla::string_view const Root, std::vector<strzilla::string> const &Extensions)
+static std::unordered_map<strzilla::string, strzilla::string> const s_OptionsMap = [](strzilla::string_view const          Root,
+                                                                                      std::vector<strzilla::string> const &Extensions)
 {
     std::unordered_map<strzilla::string, strzilla::string> OptionsMap { { "None", "" } };
     try
@@ -22,7 +23,10 @@ static std::unordered_map<strzilla::string, strzilla::string> const s_OptionsMap
         {
             if (Entry.is_regular_file())
             {
-                if (std::find(std::execution::unseq, std::cbegin(Extensions), std::cend(Extensions), strzilla::string { Entry.path().extension().string() }) != std::cend(Extensions))
+                if (std::find(std::execution::unseq,
+                              std::cbegin(Extensions),
+                              std::cend(Extensions),
+                              strzilla::string { Entry.path().extension().string() }) != std::cend(Extensions))
                 {
                     OptionsMap.emplace(Entry.path().stem().string(), Entry.path().string());
                 }
@@ -47,6 +51,8 @@ AppScenePanel::AppScenePanel(Control *const Parent)
 
 void AppScenePanel::Paint()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     if (ImGui::Begin("Scene"))
     {
         CreateIlluminationPanel();
@@ -58,6 +64,8 @@ void AppScenePanel::Paint()
 
 void AppScenePanel::CreateInfoPanel()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     if (ImGui::CollapsingHeader("Current Scene", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
     {
         auto const &Objects = RenderCore::Renderer::GetObjects();
@@ -134,6 +142,8 @@ void AppScenePanel::CreateInfoPanel()
 
 void AppScenePanel::CreateIlluminationPanel()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     if (ImGui::CollapsingHeader("Illumination", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
     {
         RenderCore::Illumination &IlluminationConfig = RenderCore::Renderer::GetMutableIllumination();
@@ -175,6 +185,8 @@ void AppScenePanel::CreateIlluminationPanel()
 
 void AppScenePanel::CreateObjectsList() const
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     if (auto const &Objects = RenderCore::Renderer::GetObjects();
         ImGui::CollapsingHeader(std::data(std::format("Loaded Objects: {} ", RenderCore::Renderer::GetNumObjects())), ImGuiTreeNodeFlags_DefaultOpen))
     {
@@ -187,6 +199,8 @@ void AppScenePanel::CreateObjectsList() const
 
 void AppScenePanel::CreateObjectItem(std::shared_ptr<RenderCore::Object> const &Object)
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object->GetID(), std::data(Object->GetName()))), ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Text(std::data(std::format("ID: {}\nName: {}\nPath: {}\nTriangles Count: {}",
@@ -198,15 +212,14 @@ void AppScenePanel::CreateObjectItem(std::shared_ptr<RenderCore::Object> const &
         ImGui::Separator();
 
         float Position[3] = { Object->GetPosition().x, Object->GetPosition().y, Object->GetPosition().z };
-        if (ImGui::SliderFloat3(std::data(std::format("[{}] Position", Object->GetID())), &Position[0], -100.F, 100.F, "%.2f")
-            && ImGui::IsItemVisible())
+        if (ImGui::SliderFloat3(std::data(std::format("[{}] Position", Object->GetID())), &Position[0], -100.F, 100.F, "%.2f") &&
+            ImGui::IsItemVisible())
         {
             Object->SetPosition({ Position[0], Position[1], Position[2] });
         }
 
         float Scale[3] = { Object->GetScale().x, Object->GetScale().y, Object->GetScale().z };
-        if (ImGui::SliderFloat3(std::data(std::format("[{}] Scale", Object->GetID())), &Scale[0], 0.01F, 10.F, "%.2f") &&
-            ImGui::IsItemVisible())
+        if (ImGui::SliderFloat3(std::data(std::format("[{}] Scale", Object->GetID())), &Scale[0], 0.01F, 10.F, "%.2f") && ImGui::IsItemVisible())
         {
             Object->SetScale({ Scale[0], Scale[1], Scale[2] });
         }

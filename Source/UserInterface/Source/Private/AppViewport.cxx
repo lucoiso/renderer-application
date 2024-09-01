@@ -21,6 +21,8 @@ AppViewport::AppViewport(Control *const Parent)
 
 AppViewport::~AppViewport()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     if (!std::empty(m_ViewportDescriptorSets))
     {
         for (auto const &DescriptorSetIter : m_ViewportDescriptorSets)
@@ -36,6 +38,8 @@ AppViewport::~AppViewport()
 
 void AppViewport::Refresh()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     if (!RenderCore::Renderer::IsImGuiInitialized())
     {
         return;
@@ -67,6 +71,8 @@ void AppViewport::Refresh()
 
 void AppViewport::PrePaint()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4 { 0.F, 0.F, 0.F, 1.F });
 
     m_Open = ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoMove) && ImGui::IsItemVisible();
@@ -75,6 +81,8 @@ void AppViewport::PrePaint()
 
 void AppViewport::Paint()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     if (m_Open && !std::empty(m_ViewportDescriptorSets))
     {
         if (std::optional<std::int32_t> const &ImageIndex = RenderCore::Renderer::GetImageIndex();
@@ -88,5 +96,7 @@ void AppViewport::Paint()
 
 void AppViewport::PostPaint()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     ImGui::End();
 }

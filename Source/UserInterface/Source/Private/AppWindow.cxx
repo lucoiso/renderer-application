@@ -21,6 +21,8 @@ using namespace UserInterface;
 
 AppWindow::AppWindow()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     if (RadeonManager::IsLoaded())
     {
         AddIndependentChild<AppRadeonProfiler>();
@@ -36,6 +38,8 @@ bool    g_EnableViewport { true };
 
 void AppWindow::PrePaint()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     ImGuiViewport const *const Viewport = ImGui::GetMainViewport();
     g_DockspaceID                       = ImGui::DockSpaceOverViewport(ImGuiID { 0U }, Viewport, ImGuiDockNodeFlags_PassthruCentralNode);
 
@@ -52,6 +56,8 @@ void AppWindow::PrePaint()
 
 void AppWindow::OnInitialize()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     SetStyle();
 
     RenderCore::Renderer::SetRenderOffscreen(true);
@@ -60,6 +66,8 @@ void AppWindow::OnInitialize()
 
 void AppWindow::SetDockingLayout()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     ImGuiID TempNodeID = g_DockspaceID;
 
     if (g_EnableViewport)
@@ -79,6 +87,8 @@ void AppWindow::SetDockingLayout()
 
 void AppWindow::SetStyle()
 {
+    EASY_FUNCTION(profiler::colors::Yellow);
+
     ImGuiStyle &ImGuiStyle = ImGui::GetStyle();
 
     ImGuiStyle.WindowPadding     = ImVec2(8.00F, 8.00F);

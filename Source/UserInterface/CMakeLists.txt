@@ -46,6 +46,7 @@ TARGET_INCLUDE_DIRECTORIES(${LIBRARY_NAME} PRIVATE $ENV{VULKAN_SDK}/Include)
 
 FIND_PACKAGE(Boost REQUIRED COMPONENTS log)
 FIND_PACKAGE(imgui CONFIG REQUIRED)
+FIND_PACKAGE(easy_profiler REQUIRED)
 
 TARGET_LINK_LIBRARIES(${LIBRARY_NAME} PRIVATE
         RadeonManager
@@ -55,6 +56,7 @@ TARGET_LINK_LIBRARIES(${LIBRARY_NAME} PUBLIC
         Boost::log
         imgui::imgui
         RenderCore
+        easy_profiler
 )
 
 INCLUDE(GNUInstallDirs)
