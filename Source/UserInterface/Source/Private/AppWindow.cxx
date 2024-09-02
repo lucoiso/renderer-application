@@ -25,11 +25,11 @@ AppWindow::AppWindow()
 
     if (RadeonManager::IsLoaded())
     {
-        AddIndependentChild<AppRadeonProfiler>();
+        AddChild<AppRadeonProfiler>();
     }
 
-    AddIndependentChild<AppScenePanel>();
-    AddIndependentChild<AppStatusPanel>();
+    AddChild<AppScenePanel>();
+    AddChild<AppStatusPanel>();
 }
 
 ImGuiID g_DockspaceID { 0U };
@@ -61,7 +61,7 @@ void AppWindow::OnInitialize()
     SetStyle();
 
     RenderCore::Renderer::SetRenderOffscreen(true);
-    AddIndependentChild<AppViewport>();
+    AddChild<AppViewport>();
 }
 
 void AppWindow::SetDockingLayout()

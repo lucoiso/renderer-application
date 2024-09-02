@@ -41,16 +41,15 @@ void SetupBoostLog()
     boost::log::formatter const LogFormatter = boost::log::expressions::format("[%1%] (%2%) [%3%] %4%") % FormatTimeStamp % FormatThreadId %
                                                FormatSeverity % boost::log::expressions::smessage;
 
-#ifndef _DEBUG
+    #ifndef _DEBUG
     boost::log::core::get()->set_filter(boost::log::trivial::severity != boost::log::trivial::debug);
+    #endif
 
     #ifdef _WIN32
     ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
     #endif
-#else
     auto const ConsoleSink = boost::log::add_console_log(std::clog);
     ConsoleSink->set_formatter(LogFormatter);
-#endif
 
     auto const LogFileSink = boost::log::add_file_log("renderer-application.log");
     LogFileSink->set_formatter(LogFormatter);
