@@ -203,11 +203,13 @@ void AppScenePanel::CreateObjectItem(std::shared_ptr<RenderCore::Object> const &
 
     if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object->GetID(), std::data(Object->GetName()))), ImGuiTreeNodeFlags_DefaultOpen))
     {
-        ImGui::Text(std::data(std::format("ID: {}\nName: {}\nPath: {}\nTriangles Count: {}",
+        ImGui::Text(std::data(std::format("ID: {}\nName: {}\nPath: {}\nTriangles Count: {}\nIndices Count: {}\nVertices Count: {}",
                                           Object->GetID(),
                                           std::data(Object->GetName()),
                                           std::data(Object->GetPath()),
-                                          Object->GetMesh()->GetNumTriangles())));
+                                          Object->GetMesh()->GetNumTriangles(),
+                                          Object->GetMesh()->GetNumIndices(),
+                                          Object->GetMesh()->GetNumVertices())));
 
         ImGui::Separator();
 

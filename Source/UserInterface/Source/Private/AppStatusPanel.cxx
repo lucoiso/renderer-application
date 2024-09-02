@@ -30,7 +30,7 @@ void AppStatusPanel::Paint()
         if (ImGui::CollapsingHeader("Profiler", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
         {
             if (bool const IsListening = profiler::isListening();
-                ImGui::Button(IsListening ? "Stop Listening" : "Start Listening"))
+                ImGui::Button(IsListening ? "Stop Profiling" : "Start Profiling"))
             {
                 if (IsListening)
                 {
