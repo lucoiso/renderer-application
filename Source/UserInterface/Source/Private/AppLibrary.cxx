@@ -13,7 +13,6 @@ module;
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
-#include <easy/profiler.h>
 
 #if defined(_WIN32) && !defined(_DEBUG)
     #include <Windows.h>
@@ -48,6 +47,7 @@ void SetupBoostLog()
     #ifdef _WIN32
     ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
     #endif
+
     auto const ConsoleSink = boost::log::add_console_log(std::clog);
     ConsoleSink->set_formatter(LogFormatter);
 
@@ -86,6 +86,7 @@ std::int32_t UserInterface::Execute()
         RadeonManager::Stop();
     }
 
+    #ifdef _DEBUG
     if (profiler::isListening())
     {
         profiler::dumpBlocksToFile("renderer-application.prof");
@@ -93,6 +94,7 @@ std::int32_t UserInterface::Execute()
         profiler::stopListen();
         EASY_PROFILER_DISABLE
     }
+    #endif
 
     return Output;
 }

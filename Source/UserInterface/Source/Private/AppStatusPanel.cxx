@@ -27,7 +27,8 @@ void AppStatusPanel::Paint()
         CreateRendererPanel();
         CreateCameraPanel();
 
-        if (ImGui::CollapsingHeader("Profiler", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
+        #ifdef _DEBUG
+        if (ImGui::CollapsingHeader("Profiler", ImGuiTreeNodeFlags_CollapsingHeader) && ImGui::IsItemVisible())
         {
             if (bool const IsListening = profiler::isListening();
                 ImGui::Button(IsListening ? "Stop Profiling" : "Start Profiling"))
@@ -46,6 +47,7 @@ void AppStatusPanel::Paint()
                 }
             }
         }
+        #endif
     }
     ImGui::End();
 }
@@ -70,7 +72,7 @@ void AppStatusPanel::CreateRendererPanel()
                 Seconds >= UpdateInterval)
             {
                 LastTime  = CurrentTime;
-                FrameTime = RenderCore::Renderer::GetFrameTime();
+                FrameTime = static_cast<float>(RenderCore::Renderer::GetFrameTime());
             }
         }
 
@@ -87,7 +89,7 @@ void AppStatusPanel::CreateRendererPanel()
             RenderCore::Renderer::RequestUpdateResources();
         }
 
-        static float MaxFPS = 1.0 / RenderCore::Renderer::GetFPSLimit();
+        static float MaxFPS = 1.F / RenderCore::Renderer::GetFPSLimit();
         if (ImGui::InputFloat("Max FPS", &MaxFPS, 1.F, 1.F, "%.0f") && ImGui::IsItemVisible())
         {
             RenderCore::Renderer::SetFPSLimit(MaxFPS);
@@ -122,7 +124,7 @@ void AppStatusPanel::CreateCameraPanel()
 {
     EASY_FUNCTION(profiler::colors::Yellow);
 
-    if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
+    if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_CollapsingHeader) && ImGui::IsItemVisible())
     {
         ImGui::Text(std::data(std::format("Position: {:.2f}, {:.2f}, {:.2f}\nRotation: {:.2f}, {:.2f}, {:.2f}\nMovement State: {}",
                                           RenderCore::Renderer::GetCamera().GetPosition().x,

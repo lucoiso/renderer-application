@@ -144,7 +144,7 @@ void AppScenePanel::CreateIlluminationPanel()
 {
     EASY_FUNCTION(profiler::colors::Yellow);
 
-    if (ImGui::CollapsingHeader("Illumination", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
+    if (ImGui::CollapsingHeader("Illumination", ImGuiTreeNodeFlags_CollapsingHeader) && ImGui::IsItemVisible())
     {
         RenderCore::Illumination &IlluminationConfig = RenderCore::Renderer::GetMutableIllumination();
 
@@ -188,7 +188,7 @@ void AppScenePanel::CreateObjectsList() const
     EASY_FUNCTION(profiler::colors::Yellow);
 
     if (auto const &Objects = RenderCore::Renderer::GetObjects();
-        ImGui::CollapsingHeader(std::data(std::format("Loaded Objects: {} ", RenderCore::Renderer::GetNumObjects())), ImGuiTreeNodeFlags_DefaultOpen))
+        ImGui::CollapsingHeader(std::data(std::format("Loaded Objects: {} ", RenderCore::Renderer::GetNumObjects())), ImGuiTreeNodeFlags_CollapsingHeader))
     {
         for (auto const &Object : Objects)
         {
@@ -201,7 +201,7 @@ void AppScenePanel::CreateObjectItem(std::shared_ptr<RenderCore::Object> const &
 {
     EASY_FUNCTION(profiler::colors::Yellow);
 
-    if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object->GetID(), std::data(Object->GetName()))), ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object->GetID(), std::data(Object->GetName()))), ImGuiTreeNodeFlags_CollapsingHeader))
     {
         ImGui::Text(std::data(std::format("ID: {}\nName: {}\nPath: {}\nTriangles Count: {}\nIndices Count: {}\nVertices Count: {}",
                                           Object->GetID(),
