@@ -82,11 +82,18 @@ void AppStatusPanel::CreateRendererPanel()
 
         static bool EnableVSync = RenderCore::Renderer::GetVSync();
         bool        NewVSync    = EnableVSync;
-        if (ImGui::Checkbox("VSync Enabled", &NewVSync) && ImGui::IsItemVisible() && EnableVSync != NewVSync)
+        if (ImGui::Checkbox("VSync", &NewVSync) && ImGui::IsItemVisible() && EnableVSync != NewVSync)
         {
             EnableVSync = NewVSync;
             RenderCore::Renderer::SetVSync(EnableVSync);
-            RenderCore::Renderer::RequestUpdateResources();
+        }
+
+        static bool EnableDefaultSync = RenderCore::Renderer::GetUseDefaultSync();
+        bool        NewDefaultSync    = EnableDefaultSync;
+        if (ImGui::Checkbox("Default Sync", &NewDefaultSync) && ImGui::IsItemVisible() && EnableDefaultSync != NewDefaultSync)
+        {
+            EnableDefaultSync = NewDefaultSync;
+            RenderCore::Renderer::SetUseDefaultSync(EnableDefaultSync);
         }
 
         static float MaxFPS = 1.F / RenderCore::Renderer::GetFPSLimit();
