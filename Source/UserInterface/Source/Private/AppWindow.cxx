@@ -11,7 +11,7 @@ module UserInterface.Window;
 import RenderCore.Types.Transform;
 
 import RenderCore.Renderer;
-import UserInterface.Viewport;
+import RenderCore.UserInterface.Viewport;
 import UserInterface.ScenePanel;
 import UserInterface.StatusPanel;
 import UserInterface.RadeonProfiler;
@@ -60,8 +60,7 @@ void AppWindow::OnInitialize()
 
     SetStyle();
 
-    RenderCore::Renderer::SetRenderOffscreen(true);
-    AddChild<AppViewport>();
+    AddChild<RenderCore::Viewport>();
 }
 
 void AppWindow::SetDockingLayout()
