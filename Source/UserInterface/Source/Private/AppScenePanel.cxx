@@ -8,6 +8,7 @@ module UserInterface.ScenePanel;
 
 import RenderCore.Renderer;
 import RenderCore.Runtime.Scene;
+import RenderCore.Types.Illumination;
 
 using namespace UserInterface;
 

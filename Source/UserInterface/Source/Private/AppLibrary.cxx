@@ -21,6 +21,7 @@ module;
 module UserInterface.Library;
 
 import UserInterface.Window;
+import RenderCore.Utils.EnumHelpers;
 
 using namespace UserInterface;
 

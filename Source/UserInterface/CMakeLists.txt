@@ -77,5 +77,5 @@ FETCHCONTENT_MAKEAVAILABLE(gltf_samples)
 
 ADD_CUSTOM_TARGET(COPY_MODELS
         COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different "${gltf_samples_SOURCE_DIR}/Models" "${CMAKE_INSTALL_BINDIR}/Models"
-        COMMENT "Copying models"
+        COMMENT "Copying application 3D models"
 )
