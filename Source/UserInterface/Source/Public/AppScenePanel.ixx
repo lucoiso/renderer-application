@@ -4,15 +4,16 @@
 
 module;
 
+#include "UserInterfaceModule.hpp"
+
 export module UserInterface.ScenePanel;
 
-import UserInterface.Window;
-import RenderCore.UserInterface.Control;
+export import luGUI.UserInterface.Control;
 import RenderCore.Types.Object;
 
 namespace UserInterface
 {
-    export class AppScenePanel final : public RenderCore::Control
+    export class USERINTERFACEMODULE_API AppScenePanel : public luGUI::Control
     {
     public:
         explicit AppScenePanel(Control *);

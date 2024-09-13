@@ -8,26 +8,14 @@ module;
 
 module UserInterface.Window;
 
-import RenderCore.Types.Transform;
-
-import RenderCore.Renderer;
-import RenderCore.UserInterface.Viewport;
 import UserInterface.ScenePanel;
 import UserInterface.StatusPanel;
-import UserInterface.RadeonProfiler;
-import RadeonManager.Manager;
+import luGUI.UserInterface.Viewport;
 
 using namespace UserInterface;
 
 AppWindow::AppWindow()
 {
-    EASY_FUNCTION(profiler::colors::Yellow);
-
-    if (RadeonManager::IsLoaded())
-    {
-        AddChild<AppRadeonProfiler>();
-    }
-
     AddChild<AppScenePanel>();
     AddChild<AppStatusPanel>();
 }
@@ -38,8 +26,6 @@ bool    g_EnableViewport { true };
 
 void AppWindow::PrePaint()
 {
-    EASY_FUNCTION(profiler::colors::Yellow);
-
     ImGuiViewport const *const Viewport = ImGui::GetMainViewport();
     g_DockspaceID                       = ImGui::DockSpaceOverViewport(ImGuiID { 0U }, Viewport, ImGuiDockNodeFlags_PassthruCentralNode);
 
@@ -56,17 +42,13 @@ void AppWindow::PrePaint()
 
 void AppWindow::OnInitialize()
 {
-    EASY_FUNCTION(profiler::colors::Yellow);
-
     SetStyle();
 
-    AddChild<RenderCore::Viewport>();
+    AddChild<luGUI::Viewport>();
 }
 
 void AppWindow::SetDockingLayout()
 {
-    EASY_FUNCTION(profiler::colors::Yellow);
-
     ImGuiID TempNodeID = g_DockspaceID;
 
     if (g_EnableViewport)
@@ -79,15 +61,12 @@ void AppWindow::SetDockingLayout()
 
     ImGui::DockBuilderDockWindow("Scene", LeftID);
     ImGui::DockBuilderDockWindow("Status", LeftID);
-    ImGui::DockBuilderDockWindow("Radeon Profiler", LeftID);
 
     ImGui::DockBuilderFinish(g_DockspaceID);
 }
 
 void AppWindow::SetStyle()
 {
-    EASY_FUNCTION(profiler::colors::Yellow);
-
     ImGuiStyle &ImGuiStyle = ImGui::GetStyle();
 
     ImGuiStyle.WindowPadding     = ImVec2(8.00F, 8.00F);

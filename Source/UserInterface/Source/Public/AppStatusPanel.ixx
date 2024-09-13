@@ -2,14 +2,17 @@
 // Year : 2024
 // Repo : https://github.com/lucoiso/renderer-application
 
+module;
+
+#include "UserInterfaceModule.hpp"
+
 export module UserInterface.StatusPanel;
 
-import UserInterface.Window;
-import RenderCore.UserInterface.Control;
+export import luGUI.UserInterface.Control;
 
 namespace UserInterface
 {
-    export class AppStatusPanel final : public RenderCore::Control
+    export class USERINTERFACEMODULE_API AppStatusPanel : public luGUI::Control
     {
     public:
         explicit AppStatusPanel(Control *);

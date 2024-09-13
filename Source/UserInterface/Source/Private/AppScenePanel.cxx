@@ -7,9 +7,7 @@ module;
 module UserInterface.ScenePanel;
 
 import RenderCore.Renderer;
-import RenderCore.Types.Camera;
-import RenderCore.Types.Illumination;
-import RenderCore.Types.Object;
+import RenderCore.Runtime.Scene;
 
 using namespace UserInterface;
 
@@ -51,8 +49,6 @@ AppScenePanel::AppScenePanel(Control *const Parent)
 
 void AppScenePanel::Paint()
 {
-    EASY_FUNCTION(profiler::colors::Yellow);
-
     if (ImGui::Begin("Scene"))
     {
         CreateIlluminationPanel();
@@ -64,11 +60,9 @@ void AppScenePanel::Paint()
 
 void AppScenePanel::CreateInfoPanel()
 {
-    EASY_FUNCTION(profiler::colors::Yellow);
-
     if (ImGui::CollapsingHeader("Current Scene", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
     {
-        auto const &Objects = RenderCore::Renderer::GetObjects();
+        auto const &Objects = RenderCore::GetObjects();
 
         if (ImGui::BeginCombo("glTF Scene", std::data(s_SelectedItem)))
         {
@@ -107,7 +101,7 @@ void AppScenePanel::CreateInfoPanel()
         static std::uint32_t NumObjects     = 0U;
         static std::uint32_t TotalTriangles = 0U;
 
-        if (std::uint32_t const NewNumObjects = RenderCore::Renderer::GetNumObjects();
+        if (std::uint32_t const NewNumObjects = std::size(Objects);
             NumObjects != NewNumObjects)
         {
             NumObjects     = NewNumObjects;
@@ -142,11 +136,9 @@ void AppScenePanel::CreateInfoPanel()
 
 void AppScenePanel::CreateIlluminationPanel()
 {
-    EASY_FUNCTION(profiler::colors::Yellow);
-
     if (ImGui::CollapsingHeader("Illumination", ImGuiTreeNodeFlags_CollapsingHeader) && ImGui::IsItemVisible())
     {
-        RenderCore::Illumination &IlluminationConfig = RenderCore::Renderer::GetMutableIllumination();
+        RenderCore::Illumination &IlluminationConfig = RenderCore::GetIllumination();
 
         static float LightPosition[3] = {
                 IlluminationConfig.GetPosition().x,
@@ -185,10 +177,8 @@ void AppScenePanel::CreateIlluminationPanel()
 
 void AppScenePanel::CreateObjectsList() const
 {
-    EASY_FUNCTION(profiler::colors::Yellow);
-
-    if (auto const &Objects = RenderCore::Renderer::GetObjects();
-        ImGui::CollapsingHeader(std::data(std::format("Loaded Objects: {} ", RenderCore::Renderer::GetNumObjects())), ImGuiTreeNodeFlags_CollapsingHeader))
+    if (auto const &Objects = RenderCore::GetObjects();
+        ImGui::CollapsingHeader(std::data(std::format("Loaded Objects: {} ", std::size(Objects))), ImGuiTreeNodeFlags_CollapsingHeader))
     {
         for (auto const &Object : Objects)
         {
@@ -199,8 +189,6 @@ void AppScenePanel::CreateObjectsList() const
 
 void AppScenePanel::CreateObjectItem(std::shared_ptr<RenderCore::Object> const &Object)
 {
-    EASY_FUNCTION(profiler::colors::Yellow);
-
     if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object->GetID(), std::data(Object->GetName()))), ImGuiTreeNodeFlags_CollapsingHeader))
     {
         ImGui::Text(std::data(std::format("ID: {}\nName: {}\nPath: {}\nTriangles Count: {}\nIndices Count: {}\nVertices Count: {}",

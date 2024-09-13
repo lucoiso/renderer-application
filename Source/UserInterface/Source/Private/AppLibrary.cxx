@@ -22,17 +22,10 @@ module UserInterface.Library;
 
 import UserInterface.Window;
 
-import RenderCore.UserInterface.Window;
-import RenderCore.UserInterface.Window.Flags;
-import RenderCore.Utils.EnumHelpers;
-import RadeonManager.Manager;
-
 using namespace UserInterface;
 
 void SetupBoostLog()
 {
-    EASY_FUNCTION(profiler::colors::Yellow);
-
     auto const FormatTimeStamp = boost::log::expressions::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%d %H:%M:%S.%f");
     auto const FormatThreadId  = boost::log::expressions::attr<boost::log::attributes::current_thread_id::value_type>("ThreadID");
     auto const FormatSeverity  = boost::log::expressions::attr<boost::log::trivial::severity_level>("Severity");
@@ -63,14 +56,11 @@ std::int32_t UserInterface::Execute()
 
     std::int32_t Output{EXIT_FAILURE};
 
-    auto const IsRadeonManagerActive = RadeonManager::Start();
-
     if (UserInterface::AppWindow Window;
         Window.Initialize(1280U,
                           600U,
-                          "Renderer Application: Vulkan",
-                          RenderCore::InitializationFlags::ENABLE_IMGUI | RenderCore::InitializationFlags::ENABLE_DOCKING |
-                                  RenderCore::InitializationFlags::ENABLE_VIEWPORTS))
+                          "luGUI",
+                          luGUI::InitializationFlags::ENABLE_DOCKING | luGUI::InitializationFlags::ENABLE_VIEWPORTS))
     {
         while (Window.IsOpen())
         {
@@ -80,21 +70,6 @@ std::int32_t UserInterface::Execute()
         Window.Shutdown();
         Output = EXIT_SUCCESS;
     }
-
-    if (IsRadeonManagerActive)
-    {
-        RadeonManager::Stop();
-    }
-
-    #ifdef _DEBUG
-    if (profiler::isListening())
-    {
-        profiler::dumpBlocksToFile("renderer-application.prof");
-
-        profiler::stopListen();
-        EASY_PROFILER_DISABLE
-    }
-    #endif
 
     return Output;
 }

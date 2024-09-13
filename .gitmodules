@@ -1,3 +1,3 @@
-[submodule "Source/vulkan-renderer"]
-	path = Source/vulkan-renderer
-	url = https://github.com/lucoiso/vulkan-renderer.git
+[submodule "Source/luGUI"]
+	path = Source/luGUI
+	url = https://github.com/lucoiso/luGUI.git

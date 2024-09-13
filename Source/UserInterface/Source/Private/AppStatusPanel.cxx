@@ -7,9 +7,8 @@ module;
 module UserInterface.StatusPanel;
 
 import RenderCore.Renderer;
-import RenderCore.Types.Camera;
-import RenderCore.Types.Object;
-import RenderCore.Types.RendererStateFlags;
+import RenderCore.Runtime.Scene;
+import RenderCore.Runtime.Memory;
 
 using namespace UserInterface;
 
@@ -20,42 +19,16 @@ AppStatusPanel::AppStatusPanel(Control *const Parent)
 
 void AppStatusPanel::Paint()
 {
-    EASY_FUNCTION(profiler::colors::Yellow);
-
     if (ImGui::Begin("Status"))
     {
         CreateRendererPanel();
         CreateCameraPanel();
-
-        #ifdef _DEBUG
-        if (ImGui::CollapsingHeader("Profiler", ImGuiTreeNodeFlags_CollapsingHeader) && ImGui::IsItemVisible())
-        {
-            if (bool const IsListening = profiler::isListening();
-                ImGui::Button(IsListening ? "Stop Profiling" : "Start Profiling"))
-            {
-                if (IsListening)
-                {
-                    profiler::dumpBlocksToFile("renderer-application.prof");
-
-                    profiler::stopListen();
-                    EASY_PROFILER_DISABLE
-                }
-                else
-                {
-                    EASY_PROFILER_ENABLE
-                    profiler::startListen();
-                }
-            }
-        }
-        #endif
     }
     ImGui::End();
 }
 
 void AppStatusPanel::CreateRendererPanel()
 {
-    EASY_FUNCTION(profiler::colors::Yellow);
-
     if (ImGui::CollapsingHeader("Renderer", ImGuiTreeNodeFlags_DefaultOpen) && ImGui::IsItemVisible())
     {
         static float UpdateInterval = 1.F;
@@ -72,7 +45,7 @@ void AppStatusPanel::CreateRendererPanel()
                 Seconds >= UpdateInterval)
             {
                 LastTime  = CurrentTime;
-                FrameTime = static_cast<float>(RenderCore::Renderer::GetFrameTime());
+                FrameTime = RenderCore::Renderer::GetFrameTime();
             }
         }
 
@@ -104,11 +77,11 @@ void AppStatusPanel::CreateRendererPanel()
 
         ImGui::SliderFloat("Interval", &UpdateInterval, 0.1F, 10.F, "%.2f");
 
-        static std::string s_StatusString {};
+        static strzilla::string s_StatusString {};
 
         if (ImGui::Button("Print Allocator Status"))
         {
-            s_StatusString = RenderCore::Renderer::GetMemoryAllocatorStats(true);
+            s_StatusString = RenderCore::GetMemoryAllocatorStats(true);
             ImGui::OpenPopup("Allocator Status");
             ImGui::SetNextWindowSize(ImVec2(800, 600));
         }
@@ -129,30 +102,28 @@ void AppStatusPanel::CreateRendererPanel()
 
 void AppStatusPanel::CreateCameraPanel()
 {
-    EASY_FUNCTION(profiler::colors::Yellow);
-
     if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_CollapsingHeader) && ImGui::IsItemVisible())
     {
         ImGui::Text(std::data(std::format("Position: {:.2f}, {:.2f}, {:.2f}\nRotation: {:.2f}, {:.2f}, {:.2f}\nMovement State: {}",
-                                          RenderCore::Renderer::GetCamera().GetPosition().x,
-                                          RenderCore::Renderer::GetCamera().GetPosition().y,
-                                          RenderCore::Renderer::GetCamera().GetPosition().z,
-                                          RenderCore::Renderer::GetCamera().GetRotation().x,
-                                          RenderCore::Renderer::GetCamera().GetRotation().y,
-                                          RenderCore::Renderer::GetCamera().GetRotation().z,
-                                          static_cast<std::underlying_type_t<RenderCore::CameraMovementStateFlags>>(RenderCore::Renderer::GetCamera().
+                                          RenderCore::GetCamera().GetPosition().x,
+                                          RenderCore::GetCamera().GetPosition().y,
+                                          RenderCore::GetCamera().GetPosition().z,
+                                          RenderCore::GetCamera().GetRotation().x,
+                                          RenderCore::GetCamera().GetRotation().y,
+                                          RenderCore::GetCamera().GetRotation().z,
+                                          static_cast<std::underlying_type_t<RenderCore::CameraMovementStateFlags>>(RenderCore::GetCamera().
                                               GetCameraMovementStateFlags()))));
 
-        static float CameraSpeed = RenderCore::Renderer::GetCamera().GetSpeed();
+        static float CameraSpeed = RenderCore::GetCamera().GetSpeed();
         if (ImGui::SliderFloat("Speed", &CameraSpeed, 0.1F, 50.F, "%.2f") && ImGui::IsItemVisible())
         {
-            RenderCore::Renderer::GetMutableCamera().SetSpeed(CameraSpeed);
+            RenderCore::GetCamera().SetSpeed(CameraSpeed);
         }
 
-        static float CameraSensitivity = RenderCore::Renderer::GetCamera().GetSensitivity();
+        static float CameraSensitivity = RenderCore::GetCamera().GetSensitivity();
         if (ImGui::SliderFloat("Sensitivity", &CameraSensitivity, 0.01F, 10.F, "%.2f") && ImGui::IsItemVisible())
         {
-            RenderCore::Renderer::GetMutableCamera().SetSensitivity(CameraSensitivity);
+            RenderCore::GetCamera().SetSensitivity(CameraSensitivity);
         }
     }
 }
