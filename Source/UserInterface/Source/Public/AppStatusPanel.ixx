@@ -8,7 +8,7 @@ module;
 
 export module UserInterface.StatusPanel;
 
-import luGUI.UserInterface.Control;
+import luGUI.UserInterface.Controls.Control;
 
 namespace UserInterface
 {

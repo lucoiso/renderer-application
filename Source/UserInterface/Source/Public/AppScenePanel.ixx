@@ -8,7 +8,7 @@ module;
 
 export module UserInterface.ScenePanel;
 
-import luGUI.UserInterface.Control;
+import luGUI.UserInterface.Controls.Control;
 import RenderCore.Types.Object;
 
 namespace UserInterface

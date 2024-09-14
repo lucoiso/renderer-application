@@ -10,7 +10,7 @@ module UserInterface.Window;
 
 import UserInterface.ScenePanel;
 import UserInterface.StatusPanel;
-import luGUI.UserInterface.Viewport;
+import luGUI.UserInterface.Controls.Viewport;
 
 using namespace UserInterface;
 

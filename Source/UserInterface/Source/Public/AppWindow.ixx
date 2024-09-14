@@ -8,7 +8,7 @@ module;
 
 export module UserInterface.Window;
 
-import luGUI.UserInterface.Window;
+import luGUI.UserInterface.Controls.Window;
 
 namespace UserInterface
 {
