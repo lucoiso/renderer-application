@@ -19,7 +19,7 @@ class RendererApplicationRecipe(ConanFile):
         self.requires("imgui/1.91.0-docking")
 
         # https://conan.io/center/recipes/boost
-        self.requires("boost/1.85.0")
+        self.requires("boost/1.86.0")
 
         # https://conan.io/center/recipes/tinygltf
         self.requires("tinygltf/2.9.0")
@@ -29,6 +29,7 @@ class RendererApplicationRecipe(ConanFile):
 
     def configure(self):
         self.options["glfw/*"].shared = False
+        self.options["glfw/*"].vulkan_static = False
         self.options["imgui/*"].shared = True
         self.options["boost/*"].shared = True
         self.options["boost/*"].without_cobalt = True

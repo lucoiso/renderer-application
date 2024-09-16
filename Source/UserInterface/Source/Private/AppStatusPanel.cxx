@@ -4,6 +4,8 @@
 
 module;
 
+#include <imgui.h>
+
 module UserInterface.StatusPanel;
 
 import RenderCore.Renderer;
