@@ -101,23 +101,23 @@ void AppScenePanel::CreateInfoPanel()
 
         ImGui::Checkbox("Auto Unload", &s_AutoUnload);
 
-        static std::uint32_t NumObjects     = 0U;
-        static std::uint32_t TotalTriangles = 0U;
+        static std::uint32_t NumObjects    = 0U;
+        static std::uint32_t TotalMeshlets = 0U;
 
         if (std::uint32_t const NewNumObjects = std::size(Objects);
             NumObjects != NewNumObjects)
         {
-            NumObjects     = NewNumObjects;
-            TotalTriangles = std::reduce(std::cbegin(Objects),
-                                         std::cend(Objects),
-                                         0U,
-                                         [](std::uint32_t const Accumulator, auto const &Object)
-                                         {
-                                             return Accumulator + Object->GetMesh()->GetNumTriangles();
-                                         });
+            NumObjects    = NewNumObjects;
+            TotalMeshlets = std::reduce(std::cbegin(Objects),
+                                        std::cend(Objects),
+                                        0U,
+                                        [](std::uint32_t const Accumulator, auto const &Object)
+                                        {
+                                            return Accumulator + Object->GetMesh()->GetNumMeshlets();
+                                        });
         }
 
-        ImGui::Text(std::data(std::format("Objects: {}\nTriangles: {}", NumObjects, TotalTriangles)));
+        ImGui::Text(std::data(std::format("Objects: {}\nMeshlets: {}", NumObjects, TotalMeshlets)));
 
         if (!std::empty(Objects))
         {
@@ -169,12 +169,6 @@ void AppScenePanel::CreateIlluminationPanel()
         {
             IlluminationConfig.SetIntensity(std::clamp(LightIntensity, 0.F, FLT_MAX));
         }
-
-        static float AmbientLight = IlluminationConfig.GetAmbient();
-        if (ImGui::SliderFloat("Ambient Light", &AmbientLight, 0.1F, 10.F) && ImGui::IsItemVisible())
-        {
-            IlluminationConfig.SetAmbient(std::clamp(AmbientLight, 0.F, FLT_MAX));
-        }
     }
 }
 
@@ -194,13 +188,11 @@ void AppScenePanel::CreateObjectItem(std::shared_ptr<RenderCore::Object> const &
 {
     if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object->GetID(), std::data(Object->GetName()))), ImGuiTreeNodeFlags_CollapsingHeader))
     {
-        ImGui::Text(std::data(std::format("ID: {}\nName: {}\nPath: {}\nTriangles Count: {}\nIndices Count: {}\nVertices Count: {}",
+        ImGui::Text(std::data(std::format("ID: {}\nName: {}\nPath: {}\nMeshlet Count: {}",
                                           Object->GetID(),
                                           std::data(Object->GetName()),
                                           std::data(Object->GetPath()),
-                                          Object->GetMesh()->GetNumTriangles(),
-                                          Object->GetMesh()->GetNumIndices(),
-                                          Object->GetMesh()->GetNumVertices())));
+                                          Object->GetMesh()->GetNumMeshlets())));
 
         ImGui::Separator();
 
