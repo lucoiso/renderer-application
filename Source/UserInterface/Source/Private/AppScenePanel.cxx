@@ -101,17 +101,17 @@ void AppScenePanel::CreateInfoPanel()
 
         ImGui::Checkbox("Auto Unload", &s_AutoUnload);
 
-        static std::uint32_t NumObjects    = 0U;
-        static std::uint32_t TotalMeshlets = 0U;
+        static std::size_t NumObjects    = 0U;
+        static std::size_t TotalMeshlets = 0U;
 
-        if (std::uint32_t const NewNumObjects = std::size(Objects);
+        if (std::size_t const NewNumObjects = std::size(Objects);
             NumObjects != NewNumObjects)
         {
             NumObjects    = NewNumObjects;
             TotalMeshlets = std::reduce(std::cbegin(Objects),
                                         std::cend(Objects),
-                                        0U,
-                                        [](std::uint32_t const Accumulator, auto const &Object)
+                                        std::size_t { 0U },
+                                        [](std::size_t const Accumulator, auto const &Object)
                                         {
                                             return Accumulator + Object->GetMesh()->GetNumMeshlets();
                                         });
