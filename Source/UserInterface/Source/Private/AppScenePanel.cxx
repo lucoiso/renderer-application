@@ -186,34 +186,41 @@ void AppScenePanel::CreateObjectsList() const
 
 void AppScenePanel::CreateObjectItem(std::shared_ptr<RenderCore::Object> const &Object)
 {
+    auto const& ObjectMesh = Object->GetMesh();
+
+    if (!ObjectMesh)
+    {
+        return;
+    }
+
     if (ImGui::CollapsingHeader(std::data(std::format("[{}] {}", Object->GetID(), std::data(Object->GetName()))), ImGuiTreeNodeFlags_CollapsingHeader))
     {
         ImGui::Text(std::data(std::format("ID: {}\nName: {}\nPath: {}\nMeshlet Count: {}",
                                           Object->GetID(),
                                           std::data(Object->GetName()),
                                           std::data(Object->GetPath()),
-                                          Object->GetMesh()->GetNumMeshlets())));
+                                          ObjectMesh->GetNumMeshlets())));
 
         ImGui::Separator();
 
-        float Position[3] = { Object->GetPosition().x, Object->GetPosition().y, Object->GetPosition().z };
+        float Position[3] = { ObjectMesh->GetPosition().x, ObjectMesh->GetPosition().y, ObjectMesh->GetPosition().z };
         if (ImGui::SliderFloat3(std::data(std::format("[{}] Position", Object->GetID())), &Position[0], -100.F, 100.F, "%.2f") &&
             ImGui::IsItemVisible())
         {
-            Object->SetPosition({ Position[0], Position[1], Position[2] });
+            ObjectMesh->SetPosition({ Position[0], Position[1], Position[2] });
         }
 
-        float Scale[3] = { Object->GetScale().x, Object->GetScale().y, Object->GetScale().z };
+        float Scale[3] = { ObjectMesh->GetScale().x, ObjectMesh->GetScale().y, ObjectMesh->GetScale().z };
         if (ImGui::SliderFloat3(std::data(std::format("[{}] Scale", Object->GetID())), &Scale[0], 0.01F, 10.F, "%.2f") && ImGui::IsItemVisible())
         {
-            Object->SetScale({ Scale[0], Scale[1], Scale[2] });
+            ObjectMesh->SetScale({ Scale[0], Scale[1], Scale[2] });
         }
 
-        float Rotation[3] = { Object->GetRotation().x, Object->GetRotation().y, Object->GetRotation().z };
+        float Rotation[3] = { ObjectMesh->GetRotation().x, ObjectMesh->GetRotation().y, ObjectMesh->GetRotation().z };
         if (ImGui::SliderFloat3(std::data(std::format("[{}] Rotation", Object->GetID())), &Rotation[0], 0.F, 359.9F, "%.2f") &&
             ImGui::IsItemVisible())
         {
-            Object->SetRotation({ Rotation[0], Rotation[1], Rotation[2] });
+            ObjectMesh->SetRotation({ Rotation[0], Rotation[1], Rotation[2] });
         }
 
         if (ImGui::Button("Destroy"))
